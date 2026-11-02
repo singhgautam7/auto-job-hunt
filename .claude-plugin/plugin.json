@@ -1,0 +1,8 @@
+{
+  "name": "job-autopilot",
+  "version": "0.1.0",
+  "description": "Job search on autopilot for anyone, no tech skills needed. Asks a few questions, finds jobs on company career pages, Naukri and LinkedIn, applies for you, and shows everything on a dashboard in your browser.",
+  "author": { "name": "Gautam Rajeev Singh" },
+  "license": "MIT",
+  "keywords": ["jobs", "job search", "naukri", "linkedin", "resume", "india"]
+}

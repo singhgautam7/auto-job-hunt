@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Autopilot</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #1b1f24; --muted: #5f6b7a; --line: #e3e7ec;
+    --accent: #2457d6; --accent-soft: #e8eefc; --good: #1f7a4d; --warn: #9a6400; --bad: #b42318;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #111418; --card: #1a1f25; --text: #e7eaee; --muted: #9aa5b1; --line: #2a313a;
+      --accent: #7aa2ff; --accent-soft: #1e2a44; --good: #5cc98f; --warn: #e0b04a; --bad: #ff7b72; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { padding: 20px 24px 8px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+  h1 { font-size: 22px; margin: 0; }
+  .muted { color: var(--muted); font-size: 13px; }
+  main { padding: 0 24px 40px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin: 12px 0 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; cursor: pointer; text-align: left; color: inherit; font: inherit; }
+  .card[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .card b { display: block; font-size: 24px; }
+  .card span { color: var(--muted); font-size: 13px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  input, select, textarea { font: inherit; color: var(--text); background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; }
+  input[type=search] { flex: 1 1 240px; }
+  .table-wrap { background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+  th, td { padding: 9px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); cursor: pointer; white-space: nowrap; position: sticky; top: 0; background: var(--card); }
+  th[aria-sort] { color: var(--text); }
+  tr:last-child td { border-bottom: 0; }
+  td.nowrap { white-space: nowrap; }
+  a { color: var(--accent); }
+  .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+  .score-high { color: var(--good); font-weight: 600; } .score-mid { color: var(--warn); font-weight: 600; } .score-low { color: var(--bad); font-weight: 600; }
+  textarea { width: 220px; min-height: 34px; resize: vertical; font-size: 13px; padding: 5px 8px; }
+  .saved { color: var(--good); font-size: 12px; }
+  .empty { padding: 40px; text-align: center; color: var(--muted); }
+  .help { background: var(--accent-soft); border-radius: 10px; padding: 10px 14px; margin-bottom: 14px; font-size: 14px; }
+  @media (max-width: 600px) { header, main { padding-left: 16px; padding-right: 16px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Job Autopilot</h1>
+  <span class="muted" id="updated">Loading…</span>
+</header>
+<main>
+  <div class="help">Pick jobs by setting Status to <b>Apply</b>, then tell Claude "apply to my picked jobs". Notes save by themselves.</div>
+  <div class="cards" id="cards"></div>
+  <div class="bar">
+    <input type="search" id="q" placeholder="Search company, role, city, notes" aria-label="Search">
+    <select id="source" aria-label="Source"><option value="">All sources</option></select>
+    <select id="age" aria-label="Posted">
+      <option value="">Any time</option><option value="1">Posted today</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option>
+    </select>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr id="head"></tr></thead>
+    <tbody id="rows"></tbody>
+  </table></div>
+</main>
+<script>
+const COLS = [
+  ['ID', '#'], ['Company', 'Company'], ['Role', 'Role'], ['Location', 'Location'], ['Mode', 'Work mode'],
+  ['Posted', 'Posted'], ['Found', 'Found'], ['Pay', 'Pay'], ['Score', 'Match'], ['Verdict', 'Why'],
+  ['Status', 'Status'], ['Applied', 'Applied on'], ['Resume', 'Resume'], ['Source', 'Source'], ['Link', 'Link'], ['Notes', 'Notes'],
+];
+let jobs = [], statuses = [], filterStatus = '', sortKey = 'ID', sortDir = -1, editing = false;
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+async function load() {
+  if (editing) return;
+  try {
+    const d = await (await fetch('/api/jobs', { cache: 'no-store' })).json();
+    jobs = d.jobs; statuses = d.statuses;
+    $('updated').textContent = d.updated ? `Last change: ${new Date(d.updated).toLocaleString()} · refreshes by itself` : 'No jobs yet. Ask Claude to find jobs.';
+    const sources = [...new Set(jobs.map(j => j.Source).filter(Boolean))].sort();
+    const sel = $('source'), cur = sel.value;
+    sel.innerHTML = '<option value="">All sources</option>' + sources.map(s => `<option>${esc(s)}</option>`).join('');
+    sel.value = cur;
+    render();
+  } catch { $('updated').textContent = 'Cannot reach the dashboard server. Ask Claude to "open my dashboard".'; }
+}
+
+function render() {
+  const counts = { All: jobs.length };
+  for (const s of statuses) counts[s] = jobs.filter(j => j.Status === s).length;
+  $('cards').innerHTML = ['All', ...statuses].filter(s => s === 'All' || counts[s]).map(s =>
+    `<button class="card" data-s="${s === 'All' ? '' : s}" aria-pressed="${(s === 'All' ? '' : s) === filterStatus}"><b>${counts[s]}</b><span>${s === 'All' ? 'All jobs' : s}</span></button>`).join('');
+
+  $('head').innerHTML = COLS.map(([k, label]) => `<th data-k="${k}"${k === sortKey ? ` aria-sort="${sortDir > 0 ? 'ascending' : 'descending'}"` : ''}>${label}${k === sortKey ? (sortDir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('');
+
+  const q = $('q').value.toLowerCase(), src = $('source').value, age = Number($('age').value);
+  const since = age ? Date.now() - age * 864e5 : 0;
+  const list = jobs.filter(j =>
+    (!filterStatus || j.Status === filterStatus) && (!src || j.Source === src) &&
+    (!since || (j.Posted && new Date(j.Posted.replace(' ', 'T')).getTime() >= since)) &&
+    (!q || [j.Company, j.Role, j.Location, j.Notes, j.Verdict].join(' ').toLowerCase().includes(q))
+  ).sort((a, b) => {
+    const x = a[sortKey], y = b[sortKey], nx = parseFloat(x), ny = parseFloat(y);
+    return (isNaN(nx) || isNaN(ny) ? String(x).localeCompare(String(y)) : nx - ny) * sortDir;
+  });
+
+  $('rows').innerHTML = list.length ? list.map(j => `<tr>
+    <td>${esc(j.ID)}</td><td>${esc(j.Company)}</td><td>${esc(j.Role)}</td><td>${esc(j.Location)}</td><td>${esc(j.Mode)}</td>
+    <td class="nowrap">${esc(j.Posted)}</td><td class="nowrap">${esc(j.Found)}</td><td>${esc(j.Pay)}</td>
+    <td class="${scoreClass(j.Score)}">${esc(j.Score)}</td><td>${esc(j.Verdict)}</td>
+    <td><select data-id="${esc(j.ID)}" data-f="Status" aria-label="Status for ${esc(j.Company)}">${statuses.map(s => `<option${s === j.Status ? ' selected' : ''}>${s}</option>`).join('')}</select></td>
+    <td class="nowrap">${esc(j.Applied)}</td><td>${esc(j.Resume)}</td><td><span class="pill">${esc(j.Source)}</span></td>
+    <td>${/^https?:\/\//.test(j.Link) ? `<a href="${esc(j.Link)}" target="_blank" rel="noopener">Open</a>` : ''}</td>
+    <td><textarea data-id="${esc(j.ID)}" data-f="Notes" aria-label="Notes for ${esc(j.Company)}" placeholder="Add a note">${esc(j.Notes)}</textarea></td>
+  </tr>`).join('') : `<tr><td colspan="${COLS.length}" class="empty">No jobs match these filters.</td></tr>`;
+}
+
+function scoreClass(s) { const n = parseFloat(s); return isNaN(n) ? '' : n >= 4 ? 'score-high' : n >= 3 ? 'score-mid' : 'score-low'; }
+
+async function save(el) {
+  const res = await fetch(`/api/jobs/${el.dataset.id}`, {
+    method: 'POST', headers: { 'content-type': 'application/json', 'x-job-autopilot': '1' },
+    body: JSON.stringify({ field: el.dataset.f, value: el.value }),
+  });
+  const job = jobs.find(j => j.ID === el.dataset.id);
+  if (res.ok && job) job[el.dataset.f] = el.value;
+  const tag = document.createElement('span');
+  tag.className = 'saved'; tag.textContent = res.ok ? ' Saved' : ' Not saved';
+  el.after(tag); setTimeout(() => tag.remove(), 1500);
+}
+
+document.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (card) { filterStatus = card.dataset.s; render(); }
+  const th = e.target.closest('th');
+  if (th) { sortDir = sortKey === th.dataset.k ? -sortDir : -1; sortKey = th.dataset.k; render(); }
+});
+document.addEventListener('change', e => { if (e.target.dataset.f) save(e.target).then(render); });
+document.addEventListener('focusin', e => { if (e.target.tagName === 'TEXTAREA') editing = true; });
+document.addEventListener('focusout', e => { if (e.target.tagName === 'TEXTAREA') editing = false; });
+['q', 'source', 'age'].forEach(id => $(id).addEventListener('input', render));
+
+load();
+setInterval(load, 10000);
+</script>
+</body>
+</html>

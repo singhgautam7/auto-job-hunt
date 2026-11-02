@@ -1,0 +1,38 @@
+---
+name: resume
+description: Makes resume versions for the user from their own resume, one per kind of job, with the same facts and a different headline and summary. Saves Word and PDF files in the resumes folder and records which version goes with which job titles. Use when the user says "make my resume", "resume for sales manager", "fix my resume", "change my resume", or during setup.
+---
+
+# Resume versions
+
+Follow the talking rules and hard rules in the workspace `CLAUDE.md`. Never add a fact, number, title, company, date or skill that is not in the user's resume, CV or `profile.md`. If something important is missing (for example a sales target they hit), ask for it and save it under "Saved answers" in `profile.md`.
+
+## 1. Plan the versions
+
+Group the user's job titles into 2 to 4 kinds (for example "Area/Regional Sales", "Key Accounts", "Business Development"). One version per kind. Same facts in every version; only these change:
+- the headline under the name,
+- the 2 to 3 line summary,
+- the order of skills (most relevant first).
+
+Show the plan in a short list and go ahead unless they object.
+
+## 2. Make the files
+
+- If the resume is a Word file, copy it and change only the headline, summary and skills text, so their design stays the same. Use the docx skill if available.
+- If it is a PDF, rebuild it as a clean, simple one-column Word file with the same content, then make the versions from that.
+- Save each version as Word and PDF: `resumes/<first>-<last>-<kind>.docx` and `.pdf`. Keep each to 2 pages or less.
+- If the user wants to edit together and Claude Docs is available, also put the main version in a Doc and share the link.
+
+Writing rules: plain words, numbers kept exactly as given, no long dashes, no buzzwords ("results-driven", "dynamic", "synergy", "spearheaded"), no first person ("I").
+
+## 3. Check
+
+Read every PDF back. Check it against the original resume: every fact present, nothing added. Fix and recheck if not.
+
+## 4. Record
+
+Update the Resumes table in `profile.md`: file and the job titles it is for. In `jobs.md`, fill the Resume column for New and Apply rows using this table.
+
+## 5. Report
+
+List the versions and what each is for, in a few lines. Then the dashboard line.

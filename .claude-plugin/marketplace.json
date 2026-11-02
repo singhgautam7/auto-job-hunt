@@ -1,0 +1,8 @@
+{
+  "name": "job-autopilot",
+  "owner": { "name": "Gautam Rajeev Singh" },
+  "metadata": { "description": "Job search on autopilot for anyone, no tech skills needed.", "version": "0.1.0" },
+  "plugins": [
+    { "name": "job-autopilot", "source": "./", "description": "Finds jobs, applies for you, and tracks everything on a browser dashboard.", "category": "productivity", "version": "0.1.0" }
+  ]
+}
