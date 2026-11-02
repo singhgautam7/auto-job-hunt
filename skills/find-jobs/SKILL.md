@@ -44,7 +44,7 @@ Read each result: company, title, location, salary if shown, posted ("3 days ago
 
 **LinkedIn, how it works today (tested):**
 - The results list has job links (`/jobs/view/<id>/`); keep only that part as the link. More jobs load as you scroll the list, so scroll slowly a few times.
-- The Apply button tells you the route: "Easy Apply" is applied on LinkedIn; "Apply" with an arrow goes to the company's site, so treat it as a company form.
+- The Apply button tells you the route: "Easy Apply" is applied on LinkedIn; "Apply on company website" goes to the company's own form (see the apply skill). Both are fine; note the route in Notes.
 - LinkedIn is moving to an AI job search. If the search link above stops working, type a plain request in LinkedIn's job search box instead (for example "senior sales manager jobs in Pune posted this week"). Skip jobs from companies to avoid. Write them to a temp JSON file as
 `[{"company","role","location","mode","posted","pay","link","source":"naukri"|"linkedin"}]` and run
 `node app/scripts/scan.mjs --jobs jobs.md --add <file>`. It skips duplicates by link.

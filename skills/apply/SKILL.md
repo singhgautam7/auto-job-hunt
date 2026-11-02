@@ -42,10 +42,15 @@ Use Claude in Chrome (the user's own Chrome, where they are logged in). Open the
 - Naukri may show a chat of questions. Answer from `profile.md`, same rules as above.
 
 **LinkedIn (tested)**
-- Use Easy Apply only. If the job's button is "Apply" with an arrow, it goes to the company's site: treat it as a company form.
+- **Easy Apply** jobs are applied inside LinkedIn (steps below).
+- **"Apply on company website"** jobs (button "Apply" with an arrow) are supported too (tested). LinkedIn opens the company's site in a new tab. That page may be the company's careers page with its own "Apply" button, which opens the real form in another tab (for example LinkedIn, then careers.scopely.com, then a Greenhouse form). Follow the Apply buttons until you reach the form, then fill it as a company form above. Close the extra tabs when done.
+  - Check the final site belongs to that company or its hiring system (Greenhouse, Lever, Ashby, SmartRecruiters, Workday, the company's own domain). If it is a third-party job site or looks odd, stop and ask the user.
+  - Sites that need an account first (Workday, Taleo, SuccessFactors, iCIMS, many company portals): write "Needs you: create an account on <site> (one time)" in Notes and move on. After the user has signed up and is logged in, you can fill those forms.
+  - In `jobs.md`, keep the LinkedIn link, and add "Applied on <company> site" to Notes. If the same company and role already has a row from the company's own board, update that row instead of adding a new one.
+  - If the form is on Greenhouse, Lever, Ashby or SmartRecruiters and the company is not in `companies.json`, add it (test first with `--check`) so future searches find its jobs directly.
 - Easy Apply has several pages (contact, resume, work history, education, questions, review). Fill every page; never just click Next.
 - **Resume page: LinkedIn pre-selects the last file used, which can be the wrong file (in testing it was a cover letter).** Always pick the resume that matches the job's Resume column yourself and check the review page shows that file name.
-- LinkedIn only lets you choose resumes already saved on the user's LinkedIn. Uploading a new one opens the computer's file picker, which you cannot use. So during setup or `job-site-profile`, ask the user once to upload their resume versions in LinkedIn (Jobs, then Application settings). Until then, pick the saved resume closest to the right version and say which one you used.
+- Easy Apply only lets you choose resumes already saved on the user's LinkedIn (company-site forms do allow uploading the PDF). Uploading a new one opens the computer's file picker, which you cannot use. So during setup or `job-site-profile`, ask the user once to upload their resume versions in LinkedIn (Jobs, then Application settings). Until then, pick the saved resume closest to the right version and say which one you used.
 - Work history and education are copied from the LinkedIn profile. Fix anything that disagrees with the resume (for example a degree shown as "N/A").
 - Questions not answered in `profile.md` (for example "Can you work in the office 5 days a week?" or "Do you know anyone here?"): ask the user, then save the answer.
 - Untick "Follow company" if it is shown. After submitting, close LinkedIn's "update your profile" offer with "Not now".
