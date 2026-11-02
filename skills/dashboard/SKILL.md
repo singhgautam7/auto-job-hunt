@@ -22,9 +22,9 @@ Next time: open the Job Autopilot folder in Documents and double-click Open Dash
 
 Explain what they can do there, only the first time:
 - See every job: company, role, city, work mode, when it was posted, when I found it, pay, match score and the reason.
-- Click a number at the top to filter (New, Apply, Applied...). Click a column name to sort.
-- Set Status to **Apply** to pick a job, then tell me "apply".
+- Click a number at the top to filter (New, Applied, Interview...). Click a column name to sort.
 - Write notes on any job. They save by themselves.
+- To change anything else, just ask me in chat. The page updates by itself.
 
 ## If it does not work
 

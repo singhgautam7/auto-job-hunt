@@ -29,9 +29,9 @@ Then say **"start"**. Claude asks its questions and opens your dashboard.
 
 ## Every day
 
-- Say **"find jobs"**, or let the daily morning search run by itself.
-- Open the dashboard, set Status to **Apply** on the jobs you like, write notes if you want.
-- Say **"apply"**. Claude shows the list, you say yes, and it applies.
+- If you turned on **Apply automatically**, Claude finds and applies to good matches every morning by itself. You just check the dashboard.
+- If not, say **"find jobs"**, then **"apply to the top 5"** and say yes.
+- Tell Claude when you get an interview, offer or rejection, and it updates the dashboard.
 
 ## Your dashboard
 

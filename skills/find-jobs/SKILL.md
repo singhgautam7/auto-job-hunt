@@ -47,7 +47,6 @@ Keep the table shape. Never touch Notes or rows the user changed.
 
 - New jobs found, and from where.
 - Top 5 by score: company, role, city, score, one-line reason.
-- "Pick jobs on your dashboard by setting Status to Apply, or say 'apply to the top 5'."
+- If `Apply automatically: Yes`: go straight on to the `apply` skill for the jobs it allows, then report both together.
+- Otherwise: "Say 'apply to the top 5', or name the jobs you want."
 - Dashboard line (start it first if needed).
-
-A scheduled run does steps 1 to 4 and never applies.

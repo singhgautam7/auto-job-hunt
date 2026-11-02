@@ -36,6 +36,8 @@
   td.nowrap { white-space: nowrap; }
   a { color: var(--accent); }
   .pill { display: inline-block; padding: 1px 8px; border-radius: 999px; font-size: 12px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+  .status-applied, .status-interview, .status-offer { background: color-mix(in srgb, var(--good) 15%, transparent); color: var(--good); }
+  .status-skip, .status-rejected, .status-closed { background: color-mix(in srgb, var(--muted) 15%, transparent); color: var(--muted); }
   .score-high { color: var(--good); font-weight: 600; } .score-mid { color: var(--warn); font-weight: 600; } .score-low { color: var(--bad); font-weight: 600; }
   textarea { width: 220px; min-height: 34px; resize: vertical; font-size: 13px; padding: 5px 8px; }
   .saved { color: var(--good); font-size: 12px; }
@@ -50,7 +52,7 @@
   <span class="muted" id="updated">Loading…</span>
 </header>
 <main>
-  <div class="help">Pick jobs by setting Status to <b>Apply</b>, then tell Claude "apply to my picked jobs". Notes save by themselves.</div>
+  <div class="help">Claude finds and applies to jobs for you. This page shows everything it did. To change anything, just ask Claude. Notes save by themselves.</div>
   <div class="cards" id="cards"></div>
   <div class="bar">
     <input type="search" id="q" placeholder="Search company, role, city, notes" aria-label="Search">
@@ -111,7 +113,7 @@ function render() {
     <td>${esc(j.ID)}</td><td>${esc(j.Company)}</td><td>${esc(j.Role)}</td><td>${esc(j.Location)}</td><td>${esc(j.Mode)}</td>
     <td class="nowrap">${esc(j.Posted)}</td><td class="nowrap">${esc(j.Found)}</td><td>${esc(j.Pay)}</td>
     <td class="${scoreClass(j.Score)}">${esc(j.Score)}</td><td>${esc(j.Verdict)}</td>
-    <td><select data-id="${esc(j.ID)}" data-f="Status" aria-label="Status for ${esc(j.Company)}">${statuses.map(s => `<option${s === j.Status ? ' selected' : ''}>${s}</option>`).join('')}</select></td>
+    <td><span class="pill status-${esc(j.Status).toLowerCase()}">${esc(j.Status)}</span></td>
     <td class="nowrap">${esc(j.Applied)}</td><td>${esc(j.Resume)}</td><td><span class="pill">${esc(j.Source)}</span></td>
     <td>${/^https?:\/\//.test(j.Link) ? `<a href="${esc(j.Link)}" target="_blank" rel="noopener">Open</a>` : ''}</td>
     <td><textarea data-id="${esc(j.ID)}" data-f="Notes" aria-label="Notes for ${esc(j.Company)}" placeholder="Add a note">${esc(j.Notes)}</textarea></td>

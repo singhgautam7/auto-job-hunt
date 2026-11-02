@@ -33,8 +33,9 @@ Ask in small groups. Use clickable options when the app offers them (AskUserQues
 11. LinkedIn link. Do you have a Naukri account?
 
 **Rules, explain then ask**
-12. "Some forms have privacy and consent boxes. Should I tick them for you after reading them?" (Yes / No, I will tick them)
-13. "Naukri and LinkedIn do not allow automatic tools, and may restrict accounts that apply too fast. I will apply slowly, at most 10 jobs a day on each. Is 10 OK?" (10 / 5 / 20)
+12. "Should I apply for you automatically every morning? I will only apply to jobs that match you well (score 4 out of 5 or more), are in your cities and meet your minimum salary when it is shown. You can see every application on your dashboard." (Yes, apply automatically / No, ask me first). If yes: "How many applications a day at most?" (10 / 20 / 30)
+13. "Some forms have privacy and consent boxes. Should I tick them for you after reading them?" (Yes / No, I will tick them). If they chose automatic applying and say No here, tell them forms with consent boxes will wait for them.
+14. "Naukri and LinkedIn do not allow automatic tools, and may restrict accounts that apply too fast. I will apply slowly, at most 10 jobs a day on each. Is 10 OK?" (10 / 5 / 20)
 
 ## 3. Suggest more job titles
 
@@ -72,6 +73,6 @@ Next time, open the Job Autopilot folder in Documents and double-click Open Dash
 - "Make my resume versions" → `resume` skill
 - "Update my Naukri and LinkedIn" → `job-site-profile` skill
 - "Find jobs now" → `find-jobs` skill
-- "Search every morning" → create a daily scheduled task at 9 AM that runs the `find-jobs` skill only (never applies). Use the app's scheduled tasks tool if available; otherwise skip and say they can ask any time.
+- "Run every morning" → create a daily scheduled task at 9 AM in the workspace folder. Its prompt: "Run the job-autopilot find-jobs skill. Then, if profile.md says Apply automatically: Yes, run the apply skill on the jobs it allows." Use the app's scheduled tasks tool if available; otherwise skip and say they can ask any time. Tell them it runs while the Claude app is open and the computer is awake, and that Chrome must stay logged in to Naukri and LinkedIn.
 
-Recommend "Find jobs now" first.
+Recommend "Find jobs now" first, then "Run every morning".

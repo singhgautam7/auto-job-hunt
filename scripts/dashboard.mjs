@@ -18,7 +18,8 @@ const JOBS = path.join(DIR, 'jobs.md');
 const PAGE = path.join(HERE, '..', 'templates', 'dashboard.html');
 
 export const STATUSES = ['New', 'Apply', 'Skip', 'Applied', 'Interview', 'Offer', 'Rejected', 'Closed'];
-const EDITABLE = { Notes: v => v.length <= 2000, Status: v => STATUSES.includes(v) };
+// The dashboard is for viewing; notes are the only thing the user edits there.
+const EDITABLE = { Notes: v => v.length <= 2000 };
 
 const isRow = l => /^\|\s*\d+\s*\|/.test(l);
 const cellsOf = l => l.split('|').slice(1, -1).map(s => s.trim());
@@ -86,6 +87,7 @@ function selfTest() {
   assert(jobs.length === 1 && jobs[0].Company === 'Acme', 'parse');
   const after = parseJobs(updateJob(md, 1, 'Notes', 'call HR | Monday'))[0];
   assert(after.Notes === 'call HR / Monday' && after.Role === 'Sales Manager', 'update keeps other cells');
+  assert(!EDITABLE.Status && EDITABLE.Notes('ok'), 'only notes are editable');
   let threw = false; try { updateJob(md, 9, 'Notes', 'x'); } catch { threw = true; }
   assert(threw, 'missing id throws');
   console.log('self-test ok');
