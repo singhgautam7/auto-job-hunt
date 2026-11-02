@@ -26,7 +26,6 @@
     --on-surface: #191B23; --on-surface-variant: #424754; --outline: #727785; --outline-variant: #C2C6D6;
     --inverse-surface: #2E3038; --inverse-on-surface: #EFF0FA; --scrim: rgba(0, 0, 0, .32);
     --chart: #2573E6; --chart-2: #D6640A; --chart-soft: #C3D4FF; --grid: #E1E2EC;
-    --tertiary-container: #FFE4D2; --on-tertiary-container: #6A3100;
     --st-blue-bg: #E0E8FF; --st-blue-fg: #005AC2; --st-green-bg: #D4F0D2; --st-green-fg: #006E2F;
     --st-amber-bg: #FFE4C7; --st-amber-fg: #855300; --st-red-bg: #FFE2DF; --st-red-fg: #B91A24;
     --st-purple-bg: #F4E2FF; --st-purple-fg: #842BD2; --st-slate-bg: #E6E7F2; --st-slate-fg: #505F76;
@@ -39,7 +38,6 @@
     --on-surface: #E1E2EC; --on-surface-variant: #C2C6D6; --outline: #8C909F; --outline-variant: #424754;
     --inverse-surface: #E1E2EC; --inverse-on-surface: #2E3038; --scrim: rgba(0, 0, 0, .6);
     --chart: #4D8EFF; --chart-2: #DB7616; --chart-soft: #004395; --grid: #2C2F37;
-    --tertiary-container: #5A2C00; --on-tertiary-container: #FFDCC3;
     --st-blue-bg: #3A4254; --st-blue-fg: #ADC6FF; --st-green-bg: #354636; --st-green-fg: #4AE176;
     --st-amber-bg: #523F27; --st-amber-fg: #FFB95F; --st-red-bg: #583B38; --st-red-fg: #FFB3AD;
     --st-purple-bg: #493E52; --st-purple-fg: #DDB7FF; --st-slate-bg: #32353C; --st-slate-fg: #B7C8E1;
@@ -83,8 +81,10 @@
   .tab[aria-selected="true"] { background: var(--secondary-container); color: var(--on-secondary-container); --sl: var(--on-secondary-container); }
   .tab .count { min-width: 22px; height: 20px; padding: 0 6px; border-radius: var(--r-full); background: var(--surface-highest); font-size: 11px; line-height: 20px; text-align: center; }
   .tab[aria-selected="true"] .count { background: var(--primary); color: var(--on-primary); }
-  .quote { display: flex; align-items: center; gap: 12px; padding: 12px 18px; margin: 0 0 14px; border-radius: var(--r-l); background: var(--tertiary-container); color: var(--on-tertiary-container); }
-  .quote q { font-weight: 600; }
+  .quote { display: flex; align-items: center; gap: 14px; padding: 14px 20px; margin: 0 0 16px; border-radius: var(--r-xl); background: var(--primary-container); color: var(--on-primary-container); }
+  .quote .ic { width: 28px; height: 28px; opacity: .85; }
+  .quote .label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .75; margin-bottom: 2px; }
+  .quote q { font-weight: 600; font-size: 15px; }
   .quote .by { opacity: .8; font-size: 13px; white-space: nowrap; }
   .tab-select-wrap { display: none; }
   .view { display: none; animation: rise 260ms var(--ease); }
@@ -217,7 +217,8 @@
     .tabs { display: none; }
     .tab-select-wrap { display: block; margin: 4px 0 20px; }
     .tab-select { width: 100%; font-weight: 600; }
-    .quote { align-items: flex-start; flex-wrap: wrap; }
+    .quote { align-items: flex-start; }
+    .quote .by { white-space: normal; }
   }
   @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
 </style>
@@ -249,8 +250,6 @@
     <button class="icon-btn sl" id="theme" aria-label="Switch light or dark mode"><svg class="ic"><use href="#i-dark"/></svg></button>
   </header>
 
-  <div class="quote" id="quote" aria-label="Quote of the day"></div>
-
   <nav class="tabs" role="tablist" aria-label="Sections">
     <button class="tab sl" role="tab" data-tab="overview" aria-selected="true"><svg class="ic"><use href="#i-dash"/></svg>Overview</button>
     <button class="tab sl" role="tab" data-tab="jobs" aria-selected="false"><svg class="ic"><use href="#i-list"/></svg>Jobs <span class="count" id="c-jobs">0</span></button>
@@ -265,6 +264,7 @@
 
   <section class="view on" id="v-overview" role="tabpanel" aria-label="Overview">
     <div class="grid stats" id="stats"></div>
+    <div class="quote" id="quote"></div>
     <div class="grid three" style="margin-bottom:16px">
       <div class="card"><h2>Jobs found and applied per day</h2><p class="sub">Last 14 days</p><div class="chart" id="ch-daily"></div></div>
       <div class="card"><h2>Your progress</h2><p class="sub">From found to offer</p><div id="ch-funnel"></div></div>
@@ -648,7 +648,7 @@ const QUOTES = [
 (function () {
   const d = new Date(), day = Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / DAY);
   const [text, by] = QUOTES[day % QUOTES.length];
-  $('quote').innerHTML = `<svg class="ic"><use href="#i-quote"/></svg><q>${esc(text)}</q><span class="by">${esc(by)}</span>`;
+  $('quote').innerHTML = `<svg class="ic" aria-hidden="true"><use href="#i-quote"/></svg><div><span class="label">Quote of the day</span><q>${esc(text)}</q> <span class="by">${esc(by)}</span></div>`;
 })();
 
 selectTab(location.hash.slice(1) || 'overview');
