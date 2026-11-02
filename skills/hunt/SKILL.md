@@ -17,6 +17,10 @@ If the profile is complete, say "Welcome back" and the one or two most useful fa
 
 If any job's Notes say "Needs you", ask those questions now in one go, save the answers in `profile.md`, and finish those applications in step 4.
 
+## 2b. Keep Naukri fresh
+
+Naukri shows recently updated profiles higher. If the user has a Naukri account and `Naukri profile last updated` in `profile.md` is empty or more than 14 days ago, ask: "Your Naukri profile was last updated on <date>. Refresh it now with your latest resume? It helps recruiters find you." On yes, run the `job-site-profile` skill (Naukri part only).
+
 ## 3. Find jobs
 
 Run the `find-jobs` skill: company career pages, then Naukri and LinkedIn when Chrome is connected, then score everything new.

@@ -63,7 +63,7 @@ From the resume and their titles, suggest 5 to 8 related titles people in India 
 
 6. If this session was not opened in the workspace folder, tell the user to open Claude in it from now on (see `CLAUDE.md`), because job forms can only get the resume from the session's folder.
 
-**Updating later:** at the start of any session, if PLUGIN's `plugin.json` version is newer than `app/plugin.json`, copy the `app/` files again. Never overwrite `profile.md`, `jobs.md` or `resumes/`.
+**Updating later:** happens by itself. When a chat starts, the plugin copies newer `app/` files and `CLAUDE.md` into the workspace and adds new built-in companies to the user's own `companies.json`. It never touches `profile.md`, `jobs.md`, `resumes/` or `letters/`.
 
 ## 5. Check the one-time needs
 

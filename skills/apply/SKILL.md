@@ -15,6 +15,7 @@ Follow the talking rules and hard rules in the workspace `CLAUDE.md`. Read `prof
 - IDs or company names: those rows.
 
 Drop any job that breaks the user's limits (city, minimum pay, companies to avoid) and say why in one line.
+Never apply twice: skip a job if `jobs.md` already has the same company and role as `Applied` (it may have come from another site).
 Daily limits: count rows with Applied = today. Stop at `Max applications per day`, and at the per-site limit for Naukri and LinkedIn.
 
 ## 2. Yes or automatic

@@ -59,6 +59,7 @@ Check these during setup and explain any missing one in plain steps.
 | `jobs.md` | One table of every job found. The dashboard shows this file. |
 | `resumes/` | The user's resume, optional CV, and the versions you make. Job-specific resumes go in `resumes/jobs/`. |
 | `letters/` | Cover letters you write for specific jobs. |
+| `interviews/` | Prep sheets for interviews. |
 | `app/` | Copied from the plugin by setup: finder, dashboard, company list. |
 | `Open Dashboard.command` / `.bat` | Double-click to open the dashboard without Claude. |
 | `CLAUDE.md`, `AGENTS.md` | These instructions. |
@@ -66,7 +67,7 @@ Check these during setup and explain any missing one in plain steps.
 `jobs.md` columns: ID, Found, Posted, Company, Role, Location, Mode, Source, Pay, Score, Verdict, Status, Applied, Resume, Link, Notes.
 Add new jobs only with `node app/scripts/scan.mjs --jobs jobs.md --add <file.json>` so IDs and format stay right. Edit existing rows in place and keep the table shape. Never delete the user's Notes.
 
-Status values: `New` (just found), `Apply` (user asked for it in chat, not done yet), `Skip`, `Applied`, `Interview`, `Offer`, `Rejected`, `Closed`. When the user tells you about an interview, offer or rejection, update the Status.
+Status values: `New` (just found), `Apply` (user asked for it in chat, not done yet), `Skip`, `Applied`, `Interview`, `Offer`, `Rejected`, `Closed`. When the user tells you about an interview, offer or rejection, update the Status. For an interview, offer the `interview-prep` skill.
 
 ## Dashboard
 
@@ -100,6 +101,7 @@ Status values: `New` (just found), `Apply` (user asked for it in chat, not done 
 | `find-jobs` | "find jobs", "search", "any new jobs?" |
 | `apply` | "apply", "apply to my picks", "apply to the top 5" |
 | `job-site-profile` | "update my Naukri", "update my LinkedIn", "upload my resume to Naukri" |
-| `resume` | "make my resume", "resume for sales manager", "change my resume" |
+| `resume` | "make my resume", "review my resume", "make my CV", "change my resume" |
+| `interview-prep` | "I have an interview at X", "prepare me for X", or a job moves to Interview |
 | `tailor` | "write a cover letter for job 12", "make a resume for this job"; also used by `apply` when a form needs a cover letter or the job needs its own resume |
 | `dashboard` | "open dashboard", "show my jobs", "dashboard not working" |

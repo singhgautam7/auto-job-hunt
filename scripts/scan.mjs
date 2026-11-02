@@ -84,12 +84,21 @@ const cell = v => String(v ?? '').replace(/\|/g, '/').replace(/\s+/g, ' ').trim(
 const stamp = d => /^\d{4}-\d{2}-\d{2}$/.test(d ?? '') ? d
   : (d ? new Date(d) : new Date()).toLocaleString('sv-SE', { hour12: false }).slice(0, 16);
 
+// Same company and role, written differently on different sites ("Titan Company Ltd" vs "Titan").
+export function jobKey(company, role) {
+  const clean = s => String(s || '').toLowerCase().replace(/\(.*?\)/g, ' ')
+    .replace(/\b(private|pvt|limited|ltd|inc|llc|corp|corporation|company|co|technologies|india)\b\.?/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ').trim();
+  return `${clean(company)}|${clean(role)}`;
+}
+
 export function readJobs(file) {
-  if (!fs.existsSync(file)) return { links: new Set(), maxId: 0 };
+  if (!fs.existsSync(file)) return { links: new Set(), keys: new Set(), maxId: 0 };
   const rows = fs.readFileSync(file, 'utf8').split('\n').filter(l => /^\|\s*\d+\s*\|/.test(l));
-  const linkCol = HEADER.indexOf('Link') + 1;
+  const col = h => HEADER.indexOf(h) + 1;
   return {
-    links: new Set(rows.map(r => r.split('|')[linkCol]?.trim())),
+    links: new Set(rows.map(r => r.split('|')[col('Link')]?.trim())),
+    keys: new Set(rows.map(r => jobKey(r.split('|')[col('Company')], r.split('|')[col('Role')]))),
     maxId: rows.reduce((m, r) => Math.max(m, parseInt(r.split('|')[1], 10)), 0),
   };
 }
@@ -155,9 +164,16 @@ function appendRows(jobsFile, jobs, maxId) {
 }
 
 // Jobs found by hand (Naukri, LinkedIn): [{company, role, location, mode, posted, link, pay, source}]
+// Hand-found jobs are skipped when the link, or the same company and role, is already listed
+// (the same job often shows up on Naukri, LinkedIn and the company's own board).
 function addJobs(jobsFile, jobs) {
-  const { links, maxId } = readJobs(jobsFile);
-  const fresh = jobs.filter(j => j.link && !links.has(j.link) && links.add(j.link));
+  const { links, keys, maxId } = readJobs(jobsFile);
+  const fresh = jobs.filter(j => {
+    const k = jobKey(j.company, j.role);
+    if (!j.link || links.has(j.link) || keys.has(k)) return false;
+    links.add(j.link); keys.add(k);
+    return true;
+  });
   console.log(JSON.stringify({ new_jobs: appendRows(jobsFile, fresh, maxId), duplicates: jobs.length - fresh.length }));
 }
 
@@ -177,6 +193,9 @@ function selfTest() {
   const r = readJobs(tmp);
   assert(r.maxId === 7 && r.links.has('https://x/1'), 'read back id and link');
   assert(toRow(1, { posted: '2026-11-01' }, 'x').includes('| 2026-11-01 |'), 'date-only stays a date');
+  assert(jobKey('Titan Company Ltd.', 'Area Sales Manager') === jobKey('Titan', 'Area Sales Manager (Retail)'), 'same job across sites');
+  assert(jobKey('Okta', 'Senior Software Engineer') !== jobKey('Okta', 'Staff Software Engineer'), 'different roles differ');
+  assert(r.keys.has(jobKey('A|B', 'R')), 'keys read back');
   console.log('self-test ok');
 }
 

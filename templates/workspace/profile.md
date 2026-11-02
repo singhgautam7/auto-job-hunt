@@ -9,6 +9,7 @@ Filled in by Claude during setup. You can edit any line. Claude reads this befor
 - Current city:
 - LinkedIn profile link:
 - Naukri account: (Yes / No)
+- Naukri profile last updated:
 - Current company:
 - Current job title:
 - Total years of experience:

@@ -55,11 +55,30 @@ Nothing runs by itself. Open Claude in your `Auto Job Hunt` folder and say what 
 - **"find jobs"**: Claude searches, scores every job, and if you turned on **Apply automatically**, applies to the good matches right away.
 - **"apply to the top 5"** or **"apply to job 12"**: Claude writes a cover letter or a job-specific resume when the job needs one, fills the form and submits.
 - **"review my resume"**, **"make my CV"**, **"write a cover letter for job 12"**: Claude improves your resume, makes a longer CV, or writes a job-specific resume and cover letter, using only facts from you.
-- **"I got an interview at Zscaler"**: Claude updates your dashboard.
+- **"I got an interview at Zscaler"**: Claude updates your dashboard and prepares you: company research, likely questions with answers from your own experience, a salary answer, and practice if you want.
 
 ## Your dashboard
 
 It starts by itself when you open a chat with Claude. Click `http://localhost:4747` in any Claude reply, or double-click **Open Dashboard** in the `Documents/Auto Job Hunt` folder. It works only on your computer. Bookmark it.
+
+## If something goes wrong
+
+- **Dashboard does not open:** start a chat with Claude in your Auto Job Hunt folder (it starts the dashboard), or double-click **Open Dashboard** in that folder.
+- **Naukri or LinkedIn not working:** open Chrome, click the Claude icon in the toolbar and check you are signed in; check you are logged in to Naukri and LinkedIn.
+- **"Needs you" on a job:** a site wanted a login, an account, a CAPTCHA or an answer only you know. Say "start" and Claude asks you what it needs.
+- **Anything else:** tell Claude what you see, in your own words.
+
+## Remove it
+
+```bash
+claude plugin uninstall auto-job-hunt@auto-job-hunt
+```
+
+```bash
+claude plugin marketplace remove auto-job-hunt
+```
+
+Your data stays in `Documents/Auto Job Hunt` until you delete that folder yourself.
 
 ## Good to know
 

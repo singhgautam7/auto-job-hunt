@@ -36,6 +36,10 @@ Show a short before/after list for each site. Ask: "Make these changes?" Change 
 
 Edit one section at a time, save, and check the page shows the new text. Go at human speed. Stop on any CAPTCHA or warning.
 
-## 4. Report
+## 4. Record
+
+After a Naukri update, set `Naukri profile last updated` in `profile.md` to today's date.
+
+## 5. Report
 
 What changed on each site, in a few lines. Suggest updating the Naukri resume every 2 weeks (Naukri shows recently updated profiles higher). Then the dashboard line.
