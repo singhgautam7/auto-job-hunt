@@ -115,10 +115,13 @@ async function main(args) {
   const cities = (opt('cities') || '').split(',').map(s => s.trim()).filter(Boolean);
   const remote = args.includes('--remote');
   const maxAge = Date.now() - Number(opt('days') || 45) * 864e5;
-  const companies = JSON.parse(fs.readFileSync(opt('companies') || path.join(HERE, '..', 'companies.json'), 'utf8'));
+  let companies = JSON.parse(fs.readFileSync(opt('companies') || path.join(HERE, '..', 'companies.json'), 'utf8'));
 
   const { links, maxId } = readJobs(jobsFile);
   const found = [], failed = [];
+  // Companies with "ats": "jobsite" have no public board; Claude searches them on Naukri and LinkedIn by name.
+  const jobsiteOnly = companies.filter(c => !FETCHERS[c.ats]).map(c => c.name);
+  companies = companies.filter(c => FETCHERS[c.ats]);
   let scanned = 0;
   // ponytail: fixed batches of 8, a proper pool if company lists grow past a few hundred
   for (let i = 0; i < companies.length; i += 8) {
@@ -138,7 +141,7 @@ async function main(args) {
   }
 
   const added = appendRows(jobsFile, found, maxId);
-  console.log(JSON.stringify({ companies: companies.length, postings: scanned, new_jobs: added, failed }, null, 1));
+  console.log(JSON.stringify({ companies: companies.length, postings: scanned, new_jobs: added, failed, search_on_naukri_and_linkedin: jobsiteOnly }, null, 1));
 }
 
 function appendRows(jobsFile, jobs, maxId) {

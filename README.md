@@ -5,7 +5,7 @@
 A Claude plugin that runs your job search for you. No tech skills needed.
 
 - Asks you a few questions and reads your resume.
-- Finds jobs on about 75 company career pages (tech, tech sales and sales), Naukri and LinkedIn.
+- Finds jobs on about 100 companies (tech, tech sales, sales, and the Tata group such as Tanishq, Croma and Westside), Naukri and LinkedIn.
 - Scores each job against what you want and skips the ones that do not fit.
 - Writes a cover letter and a job-specific resume when a job needs one, using only facts from your resume.
 - Applies for you, slowly and safely, after you say yes (or right away, if you turn that on).
