@@ -23,11 +23,11 @@ git clone https://github.com/singhgautam7/auto-job-hunt.git ~/auto-job-hunt
 bash ~/auto-job-hunt/install.sh
 ```
 
-5. Open Claude in your new **Documents/Auto Job Hunt** folder and type **start**:
+5. Open Claude in your new **Documents/Auto Job Hunt** folder and type **start** (or "start hunt", "job hunt"):
    - Claude desktop app: Code tab, start a session and choose that folder.
    - Or in Terminal: `cd ~/Documents/"Auto Job Hunt" && claude`
 
-Claude asks a few questions (it can also review your resume and add things that are missing), then opens your dashboard.
+Claude asks a few questions the first time (it can also review your resume and add things that are missing), then searches for jobs and applies. Next time, "start" skips the questions and goes straight to searching and applying.
 
 Keep the `~/auto-job-hunt` folder: the plugin runs from it.
 

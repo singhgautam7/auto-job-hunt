@@ -25,6 +25,7 @@ Nothing runs on a schedule. Work starts when the user asks ("find jobs", "apply"
 2. If `profile.md` has empty required answers, run the **setup** skill to finish them.
 3. Make sure the dashboard is running. The plugin starts it by itself when a chat begins; if the check below fails, start it yourself. Give the user the link in your first reply.
 4. Read `jobs.md`. Briefly say what changed since last time (new jobs, applications sent, anything that needs the user).
+5. If the user says "start", "start hunt", "job hunt" or similar, run the **hunt** skill: questions only if not already answered, then job search, then applying.
 
 ## What the user needs (one time)
 
@@ -80,7 +81,8 @@ Status values: `New` (just found), `Apply` (user asked for it in chat, not done 
 
 | Skill | Use when the user says |
 |---|---|
-| `setup` | "start", "set me up", first session, or `profile.md` missing |
+| `hunt` | "start", "start hunt", "job hunt", "hunt": setup questions if not done, then find jobs, then apply |
+| `setup` | "set me up", "redo my profile", or `profile.md` missing |
 | `find-jobs` | "find jobs", "search", "any new jobs?" |
 | `apply` | "apply", "apply to my picks", "apply to the top 5" |
 | `job-site-profile` | "update my Naukri", "update my LinkedIn", "upload my resume to Naukri" |

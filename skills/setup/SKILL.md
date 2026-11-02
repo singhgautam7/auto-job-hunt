@@ -1,6 +1,6 @@
 ---
 name: setup
-description: First-time setup for Auto Job Hunt. Asks the user a short set of questions (name, cities, job titles, resume, salary, notice period), suggests more job titles, creates the Auto Job Hunt folder and opens the dashboard. Use when the user says "start", "set me up", "start my job search", "set up auto job hunt", or when profile.md is missing or incomplete.
+description: First-time setup for Auto Job Hunt. Asks the user a short set of questions (name, cities, job titles, resume, salary, notice period), suggests more job titles, creates the Auto Job Hunt folder and opens the dashboard. Use when the user says "set me up", "redo my profile", "set up auto job hunt", or when profile.md is missing or incomplete (the hunt skill calls it for "start").
 ---
 
 # Setup
@@ -85,4 +85,4 @@ Next time, open the Auto Job Hunt folder in Documents and double-click Open Dash
 - "Update my Naukri and LinkedIn" → `job-site-profile` skill
 - "Find jobs now" → `find-jobs` skill
 
-Recommend "Find jobs now" first. Tell them nothing runs by itself: they just come back and say "find jobs" whenever they want.
+If setup was started by the `hunt` skill ("start", "job hunt"), do not offer options: go straight back to `hunt` and continue with finding jobs. Otherwise recommend "Find jobs now". Tell them nothing runs by itself: they just come back and say "start" or "find jobs" whenever they want.
