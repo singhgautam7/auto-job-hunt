@@ -41,10 +41,15 @@ Use Claude in Chrome (the user's own Chrome, where they are logged in). Open the
 - Click Apply. If it goes to the company website, treat it as a company form.
 - Naukri may show a chat of questions. Answer from `profile.md`, same rules as above.
 
-**LinkedIn**
-- Use Easy Apply only. Go through each step, check every field, attach the resume.
-- If the job says "Apply on company website", treat it as a company form.
-- Untick "Follow company" before submitting.
+**LinkedIn (tested)**
+- Use Easy Apply only. If the job's button is "Apply" with an arrow, it goes to the company's site: treat it as a company form.
+- Easy Apply has several pages (contact, resume, work history, education, questions, review). Fill every page; never just click Next.
+- **Resume page: LinkedIn pre-selects the last file used, which can be the wrong file (in testing it was a cover letter).** Always pick the resume that matches the job's Resume column yourself and check the review page shows that file name.
+- LinkedIn only lets you choose resumes already saved on the user's LinkedIn. Uploading a new one opens the computer's file picker, which you cannot use. So during setup or `job-site-profile`, ask the user once to upload their resume versions in LinkedIn (Jobs, then Application settings). Until then, pick the saved resume closest to the right version and say which one you used.
+- Work history and education are copied from the LinkedIn profile. Fix anything that disagrees with the resume (for example a degree shown as "N/A").
+- Questions not answered in `profile.md` (for example "Can you work in the office 5 days a week?" or "Do you know anyone here?"): ask the user, then save the answer.
+- Untick "Follow company" if it is shown. After submitting, close LinkedIn's "update your profile" offer with "Not now".
+- Success means LinkedIn shows "Your application was sent" or "Application submitted".
 
 **Every site**
 - Before submitting, check that all required fields are filled and the right resume is attached.

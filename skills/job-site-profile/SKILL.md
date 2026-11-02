@@ -26,7 +26,7 @@ Draft the changes. Use only facts from the resume and `profile.md`. Plain words,
 - About: 3 to 5 short sentences.
 - Skills: add missing ones from the resume (up to 10).
 - Open to work: job titles and cities from `profile.md`, visible to **recruiters only** (so their current employer does not see it).
-- Saved resume for Easy Apply (Jobs > Application settings): upload the main resume PDF.
+- Saved resumes for Easy Apply (Jobs > Application settings): the user must upload these themselves, because uploading opens the computer's file picker. Tell them which PDFs from `resumes/` to upload (one per version) and wait for "done".
 
 ## 2. Show, then ask once
 
