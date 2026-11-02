@@ -102,6 +102,12 @@ export function toRow(id, j, foundAt) {
 
 async function main(args) {
   const opt = k => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] : undefined; };
+  // --check <ats> <slug>: test one company's board before adding it to companies.json
+  if (opt('check')) {
+    const jobs = await FETCHERS[opt('check')](args[args.indexOf('--check') + 2]);
+    const india = jobs.filter(j => /india|bengaluru|bangalore|mumbai|pune|delhi|gurgaon|gurugram|noida|hyderabad|chennai/i.test(j.location));
+    return console.log(JSON.stringify({ jobs: jobs.length, india: india.length, sample: india.slice(0, 5).map(j => j.role) }));
+  }
   const jobsFile = opt('jobs');
   if (jobsFile && opt('add')) return addJobs(jobsFile, JSON.parse(fs.readFileSync(opt('add'), 'utf8')));
   const roles = (opt('roles') || '').split(',').map(s => s.trim()).filter(Boolean);

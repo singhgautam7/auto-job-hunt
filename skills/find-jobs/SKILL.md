@@ -1,6 +1,6 @@
 ---
 name: find-jobs
-description: Finds new jobs for the user on company career pages, Naukri and LinkedIn, scores each one against profile.md, and adds them to jobs.md so they show on the dashboard. Use when the user says "find jobs", "search for jobs", "any new jobs?", "look on Naukri", "look on LinkedIn", or for the daily scheduled run.
+description: Finds new jobs for the user on company career pages, Naukri and LinkedIn, scores each one against profile.md, and adds them to jobs.md so they show on the dashboard. Use when the user says "find jobs", "search for jobs", "any new jobs?", "look on Naukri" or "look on LinkedIn".
 ---
 
 # Find jobs
@@ -17,7 +17,11 @@ node app/scripts/scan.mjs --jobs jobs.md --roles "<titles>" --cities "<cities>" 
 - `<list>`: `companies.json` in the workspace if it exists, else `app/companies.json`.
 - The output says how many new jobs were added and which companies failed. Failures are fine; do not retry more than once.
 
-To add companies for the user's field: find the company's job board on Greenhouse, Lever, Ashby or SmartRecruiters, then add `{"name": "...", "ats": "greenhouse|lever|ashby|smartrecruiters", "slug": "..."}` to the workspace `companies.json` (copy `app/companies.json` first). Only add a company after one test fetch works.
+The built-in list has about 75 companies: tech firms, which also hire tech sales, plus sales-heavy companies like Paytm, Swiggy, Airwallex, ZoomInfo and Bosch.
+
+**Other fields (the first time, and when the user asks for more companies):** if the user's work is not covered well (for example FMCG sales, banking, pharma, real estate, retail), research companies in their field and city that hire in India. For each, find its job board on Greenhouse, Lever, Ashby or SmartRecruiters (look at the "Apply" link on its careers page), then test it:
+`node app/scripts/scan.mjs --check <greenhouse|lever|ashby|smartrecruiters> <slug>`
+Add it only if the test shows jobs in India: copy `app/companies.json` to the workspace `companies.json` once, then add `{"name": "...", "ats": "...", "slug": "..."}`. Many Indian companies use other systems (Workday, Darwinbox, their own site); for those, Naukri and LinkedIn are the source, so tell the user that in one line instead of adding them.
 
 ## 2. Naukri and LinkedIn (needs Claude in Chrome and the user logged in)
 

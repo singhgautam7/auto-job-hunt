@@ -1,11 +1,14 @@
+<img src=".claude-plugin/icon.png" width="96" alt="">
+
 # Auto Job Hunt
 
 A Claude plugin that runs your job search for you. No tech skills needed.
 
 - Asks you a few questions and reads your resume.
-- Finds jobs on 50+ company career pages, Naukri and LinkedIn.
+- Finds jobs on about 75 company career pages (tech, tech sales and sales), Naukri and LinkedIn.
 - Scores each job against what you want and skips the ones that do not fit.
-- Applies for you, slowly and safely, after you say yes.
+- Writes a cover letter and a job-specific resume when a job needs one, using only facts from your resume.
+- Applies for you, slowly and safely, after you say yes (or right away, if you turn that on).
 - Shows everything on a dashboard in your browser: every job, when it was posted, when it was found, its status and your notes.
 
 ## What you need
@@ -27,15 +30,17 @@ A Claude plugin that runs your job search for you. No tech skills needed.
 
 Then say **"start"**. Claude asks its questions and opens your dashboard.
 
-## Every day
+## How to use it
 
-- If you turned on **Apply automatically**, Claude finds and applies to good matches every morning by itself. You just check the dashboard.
-- If not, say **"find jobs"**, then **"apply to the top 5"** and say yes.
-- Tell Claude when you get an interview, offer or rejection, and it updates the dashboard.
+Nothing runs by itself. Open Claude in your `Auto Job Hunt` folder and say what you want:
+
+- **"find jobs"**: Claude searches, scores every job, and if you turned on **Apply automatically**, applies to the good matches right away.
+- **"apply to the top 5"** or **"apply to job 12"**: Claude writes a cover letter or a job-specific resume when the job needs one, fills the form and submits.
+- **"I got an interview at Zscaler"**: Claude updates your dashboard.
 
 ## Your dashboard
 
-Click `http://localhost:4747` in any Claude reply, or double-click **Open Dashboard** in the `Documents/Auto Job Hunt` folder. It works only on your computer. Bookmark it.
+It starts by itself when you open a chat with Claude. Click `http://localhost:4747` in any Claude reply, or double-click **Open Dashboard** in the `Documents/Auto Job Hunt` folder. It works only on your computer. Bookmark it.
 
 ## Good to know
 

@@ -19,7 +19,7 @@ Show the plan in a short list and go ahead unless they object.
 ## 2. Make the files
 
 - If the resume is a Word file, copy it and change only the headline, summary and skills text, so their design stays the same. Use the docx skill if available.
-- If it is a PDF, rebuild it as a clean, simple one-column Word file with the same content, then make the versions from that.
+- If it is a PDF, or no Word tools are available, build each version from `app/templates/resume.html` and turn it into a PDF with `node app/scripts/make-pdf.mjs <file>.html`.
 - Save each version as Word and PDF: `resumes/<first>-<last>-<kind>.docx` and `.pdf`. Keep each to 2 pages or less.
 - If the user wants to edit together and Claude Docs is available, also put the main version in a Doc and share the link.
 

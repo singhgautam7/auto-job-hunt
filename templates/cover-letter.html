@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cover letter</title>
+<!--
+  Cover letter template. Claude copies this file, writes the letter from the job
+  description and the user's real facts, then runs:
+  node app/scripts/make-pdf.mjs <file>.html
+  One page, 180 to 260 words, three short paragraphs. Plain words, no long dashes,
+  no buzzwords, nothing that sounds AI written.
+-->
+<style>
+  @page { size: A4; margin: 22mm 22mm; }
+  body { margin: 0; font: 11pt/1.55 "Helvetica Neue", Arial, sans-serif; color: #1a1a1a; }
+  .from { margin-bottom: 22px; }
+  .from b { font-size: 15pt; display: block; margin-bottom: 2px; }
+  .from span { color: #555; font-size: 9.5pt; }
+  .date, .to { margin-bottom: 16px; }
+  p { margin: 0 0 12px; }
+  .sign { margin-top: 22px; }
+</style>
+</head>
+<body>
+  <div class="from"><b>Full Name</b><span>City, India | +91 00000 00000 | email@example.com | linkedin.com/in/handle</span></div>
+  <div class="date">2 November 2026</div>
+  <div class="to">Hiring Team<br>Company Name<br>Job title (job ID if shown)</div>
+
+  <p>Dear Hiring Team,</p>
+  <p>Paragraph 1: the role you are applying for and the one strongest reason you fit it, using a real result from the resume.</p>
+  <p>Paragraph 2: two or three things the job asks for, each matched with something the user has really done. Use the job's own words where true.</p>
+  <p>Paragraph 3: why this company (one specific, true reason from the job post or company page), notice period if useful, and a simple close.</p>
+
+  <div class="sign">Regards,<br>Full Name</div>
+</body>
+</html>

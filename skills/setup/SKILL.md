@@ -35,9 +35,10 @@ Ask in small groups. Use clickable options when the app offers them (AskUserQues
 13. LinkedIn link. Do you have a Naukri account?
 
 **Rules, explain then ask**
-14. "Should I apply for you automatically every morning? I will only apply to jobs that match you well (score 4 out of 5 or more), are in your cities and meet your minimum salary when it is shown. You can see every application on your dashboard." (Yes, apply automatically / No, ask me first). If yes: "How many applications a day at most?" (10 / 20 / 30)
-15. "Some forms have privacy and consent boxes. Should I tick them for you after reading them?" (Yes / No, I will tick them). If they chose automatic applying and say No here, tell them forms with consent boxes will wait for them.
-16. "Naukri and LinkedIn do not allow automatic tools, and may restrict accounts that apply too fast. I will apply slowly, at most 10 jobs a day on each. Is 10 OK?" (10 / 5 / 20)
+14. "When you ask me to find jobs, should I also apply to the good ones right away? I will only apply to jobs that match you well (score 4 out of 5 or more), are in your cities and meet your minimum salary when it is shown. You can see every application on your dashboard." (Yes, apply automatically / No, ask me first). If yes: "How many applications a day at most?" (10 / 20 / 30)
+15. "Some jobs ask for a cover letter. Should I write one only when the form needs it, or for every application?" (Only when needed / Every application)
+16. "Some forms have privacy and consent boxes. Should I tick them for you after reading them?" (Yes / No, I will tick them). If they chose automatic applying and say No here, tell them forms with consent boxes will wait for them.
+17. "Naukri and LinkedIn do not allow automatic tools, and may restrict accounts that apply too fast. I will apply slowly, at most 10 jobs a day on each. Is 10 OK?" (10 / 5 / 20)
 
 ## 3. Suggest more job titles
 
@@ -48,7 +49,8 @@ From the resume and their titles, suggest 5 to 8 related titles people in India 
 1. Folder: `~/Documents/Auto Job Hunt/` (Windows: `Documents\Auto Job Hunt`). In Cowork, use the folder the user shared. If it already has `profile.md`, update it instead of starting over.
 2. Copy from PLUGIN:
    - `templates/workspace/*` → workspace root (CLAUDE.md comes from PLUGIN/CLAUDE.md, AGENTS.md, profile.md, Open Dashboard files). Keep only the launcher for their system: `.command` on Mac (keep it executable), `.bat` on Windows.
-   - `scripts/` → `app/scripts/`, `templates/dashboard.html` → `app/templates/dashboard.html`, `companies.json` → `app/companies.json`, `.claude-plugin/plugin.json` → `app/plugin.json` (to know the version later).
+   - `scripts/` → `app/scripts/`; `templates/dashboard.html`, `templates/resume.html`, `templates/cover-letter.html` → `app/templates/`; `companies.json` → `app/companies.json`; `.claude-plugin/plugin.json` → `app/plugin.json` (to know the version later).
+   - Create empty folders `resumes/jobs/` and `letters/`.
 3. Fill `profile.md` with every answer. Leave unknown lines blank.
 4. Copy their resume (and CV) into `resumes/`, add it to the Resumes table in `profile.md`.
 5. Create an empty `jobs.md`:
@@ -77,6 +79,5 @@ Next time, open the Auto Job Hunt folder in Documents and double-click Open Dash
 - "Make my resume versions" → `resume` skill
 - "Update my Naukri and LinkedIn" → `job-site-profile` skill
 - "Find jobs now" → `find-jobs` skill
-- "Run every morning" → create a daily scheduled task at 9 AM in the workspace folder. Its prompt: "Run the auto-job-hunt find-jobs skill. Then, if profile.md says Apply automatically: Yes, run the apply skill on the jobs it allows." Use the app's scheduled tasks tool if available; otherwise skip and say they can ask any time. Tell them it runs while the Claude app is open and the computer is awake, and that Chrome must stay logged in to Naukri and LinkedIn.
 
-Recommend "Find jobs now" first, then "Run every morning".
+Recommend "Find jobs now" first. Tell them nothing runs by itself: they just come back and say "find jobs" whenever they want.
