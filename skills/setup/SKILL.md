@@ -1,6 +1,6 @@
 ---
 name: setup
-description: First-time setup for Job Autopilot. Asks the user a short set of questions (name, cities, job titles, resume, salary, notice period), suggests more job titles, creates the Job Autopilot folder and opens the dashboard. Use when the user says "start", "set me up", "start my job search", "set up job autopilot", or when profile.md is missing or incomplete.
+description: First-time setup for Auto Job Hunt. Asks the user a short set of questions (name, cities, job titles, resume, salary, notice period), suggests more job titles, creates the Auto Job Hunt folder and opens the dashboard. Use when the user says "start", "set me up", "start my job search", "set up auto job hunt", or when profile.md is missing or incomplete.
 ---
 
 # Setup
@@ -45,7 +45,7 @@ From the resume and their titles, suggest 5 to 8 related titles people in India 
 
 ## 4. Create the workspace
 
-1. Folder: `~/Documents/Job Autopilot/` (Windows: `Documents\Job Autopilot`). In Cowork, use the folder the user shared. If it already has `profile.md`, update it instead of starting over.
+1. Folder: `~/Documents/Auto Job Hunt/` (Windows: `Documents\Auto Job Hunt`). In Cowork, use the folder the user shared. If it already has `profile.md`, update it instead of starting over.
 2. Copy from PLUGIN:
    - `templates/workspace/*` → workspace root (CLAUDE.md comes from PLUGIN/CLAUDE.md, AGENTS.md, profile.md, Open Dashboard files). Keep only the launcher for their system: `.command` on Mac (keep it executable), `.bat` on Windows.
    - `scripts/` → `app/scripts/`, `templates/dashboard.html` → `app/templates/dashboard.html`, `companies.json` → `app/companies.json`, `.claude-plugin/plugin.json` → `app/plugin.json` (to know the version later).
@@ -70,13 +70,13 @@ Start it (see the `dashboard` skill), then explain how to open it, in these word
 
 "Your dashboard is ready: http://localhost:4747
 Click the link and it opens in your browser. It only works on this computer.
-Next time, open the Job Autopilot folder in Documents and double-click Open Dashboard. Bookmark the page to make it one click."
+Next time, open the Auto Job Hunt folder in Documents and double-click Open Dashboard. Bookmark the page to make it one click."
 
 ## 7. Next steps (offer as options)
 
 - "Make my resume versions" → `resume` skill
 - "Update my Naukri and LinkedIn" → `job-site-profile` skill
 - "Find jobs now" → `find-jobs` skill
-- "Run every morning" → create a daily scheduled task at 9 AM in the workspace folder. Its prompt: "Run the job-autopilot find-jobs skill. Then, if profile.md says Apply automatically: Yes, run the apply skill on the jobs it allows." Use the app's scheduled tasks tool if available; otherwise skip and say they can ask any time. Tell them it runs while the Claude app is open and the computer is awake, and that Chrome must stay logged in to Naukri and LinkedIn.
+- "Run every morning" → create a daily scheduled task at 9 AM in the workspace folder. Its prompt: "Run the auto-job-hunt find-jobs skill. Then, if profile.md says Apply automatically: Yes, run the apply skill on the jobs it allows." Use the app's scheduled tasks tool if available; otherwise skip and say they can ask any time. Tell them it runs while the Claude app is open and the computer is awake, and that Chrome must stay logged in to Naukri and LinkedIn.
 
 Recommend "Find jobs now" first, then "Run every morning".

@@ -1,4 +1,4 @@
-# Job Autopilot
+# Auto Job Hunt
 
 A Claude plugin that runs your job search for you. No tech skills needed.
 
@@ -19,11 +19,11 @@ A Claude plugin that runs your job search for you. No tech skills needed.
 **Claude desktop, Code tab or Claude Code:**
 
 ```
-/plugin marketplace add <github-user>/job-autopilot
-/plugin install job-autopilot@job-autopilot
+/plugin marketplace add singhgautam7/auto-job-hunt
+/plugin install auto-job-hunt@auto-job-hunt
 ```
 
-**Claude desktop, Cowork:** download `job-autopilot.plugin` from the releases page, drop it into the chat and click to install.
+**Claude desktop, Cowork:** download `auto-job-hunt.plugin` from the releases page, drop it into the chat and click to install.
 
 Then say **"start"**. Claude asks its questions and opens your dashboard.
 
@@ -35,13 +35,13 @@ Then say **"start"**. Claude asks its questions and opens your dashboard.
 
 ## Your dashboard
 
-Click `http://localhost:4747` in any Claude reply, or double-click **Open Dashboard** in the `Documents/Job Autopilot` folder. It works only on your computer. Bookmark it.
+Click `http://localhost:4747` in any Claude reply, or double-click **Open Dashboard** in the `Documents/Auto Job Hunt` folder. It works only on your computer. Bookmark it.
 
 ## Good to know
 
 - Claude never types your passwords or OTPs, never creates accounts, and never solves CAPTCHAs. When a site needs one of these, it tells you and moves on.
-- Naukri and LinkedIn do not allow automatic tools and can restrict accounts that apply too fast. Job Autopilot applies to at most 10 jobs a day on each (you can change this) and stops on any warning.
-- Your data stays in the `Job Autopilot` folder on your computer: `profile.md` (your answers), `jobs.md` (every job), `resumes/`.
+- Naukri and LinkedIn do not allow automatic tools and can restrict accounts that apply too fast. Auto Job Hunt applies to at most 10 jobs a day on each (you can change this) and stops on any warning.
+- Your data stays in the `Auto Job Hunt` folder on your computer: `profile.md` (your answers), `jobs.md` (every job), `resumes/`.
 
 ## Credits
 

@@ -1,4 +1,4 @@
-# Job Autopilot: instructions for Claude
+# Auto Job Hunt: instructions for Claude
 
 You help one person find and apply to jobs. Assume they are not technical. Most users work in sales, operations, HR, finance or similar roles, not software.
 
@@ -12,12 +12,12 @@ You help one person find and apply to jobs. Assume they are not technical. Most 
 - **End every reply with the dashboard line**, even after a simple question or a command:
   `Your dashboard: http://localhost:4747`
   If the dashboard is not running, start it first (see "Dashboard"). If you cannot start it, write instead:
-  `Your dashboard: double-click "Open Dashboard" in your Job Autopilot folder.`
+  `Your dashboard: double-click "Open Dashboard" in your Auto Job Hunt folder.`
 
 ## Start of every session
 
-1. Find the workspace: the current folder if it has `profile.md`, else `~/Documents/Job Autopilot/`. If neither exists, run the **setup** skill.
-   If the workspace is not the folder this session was opened in, tell the user once: "Please open Claude in your Job Autopilot folder (in Documents). I can only attach your resume to job forms from the folder you open me in." In the Code tab that means choosing the folder when starting a session; in Cowork, sharing that folder.
+1. Find the workspace: the current folder if it has `profile.md`, else `~/Documents/Auto Job Hunt/`. If neither exists, run the **setup** skill.
+   If the workspace is not the folder this session was opened in, tell the user once: "Please open Claude in your Auto Job Hunt folder (in Documents). I can only attach your resume to job forms from the folder you open me in." In the Code tab that means choosing the folder when starting a session; in Cowork, sharing that folder.
 2. If `profile.md` has empty required answers, run the **setup** skill to finish them.
 3. Start the dashboard if it is not running.
 4. Read `jobs.md`. Briefly say what changed since last time (new jobs, applications sent, anything that needs the user).
@@ -55,7 +55,7 @@ Status values: `New` (just found), `Apply` (user asked for it in chat, not done 
 - It is for viewing. You do the work; the user asks you in chat. It reads `jobs.md` live and refreshes by itself every 10 seconds. The only thing the user can change there is the Notes box, which saves into `jobs.md`, so read `jobs.md` again before acting.
 - The first time, and whenever asked how to open it, explain:
   1. Click the link `http://localhost:4747`. It opens in your web browser like any website, but only on your computer.
-  2. No link? Open your Job Autopilot folder (in Documents) and double-click **Open Dashboard**. On a Mac, if it says it cannot be opened, right-click it, choose Open, then Open again.
+  2. No link? Open your Auto Job Hunt folder (in Documents) and double-click **Open Dashboard**. On a Mac, if it says it cannot be opened, right-click it, choose Open, then Open again.
   3. Bookmark the page so it is one click next time.
 - In Cowork, the dashboard cannot run inside Claude. Ask the user to double-click **Open Dashboard**.
 

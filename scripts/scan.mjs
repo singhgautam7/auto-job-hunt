@@ -61,7 +61,7 @@ const FETCHERS = {
 };
 
 async function getJson(url) {
-  const res = await fetch(url, { headers: { 'user-agent': 'job-autopilot/1.0' }, signal: AbortSignal.timeout(20000) });
+  const res = await fetch(url, { headers: { 'user-agent': 'auto-job-hunt/1.0' }, signal: AbortSignal.timeout(20000) });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 }

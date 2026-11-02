@@ -43,6 +43,22 @@ export function updateJob(text, id, field, value) {
   return out.join('\n');
 }
 
+// profile.md → [{title, items: [[label, value]]}] from its "## Section" headings and "- Label: value" lines.
+export function parseProfile(text) {
+  const sections = [];
+  for (const line of text.split('\n')) {
+    const h = line.match(/^##\s+(.+)/);
+    if (h) { sections.push({ title: h[1].trim(), items: [] }); continue; }
+    const kv = line.match(/^-\s+([^:]+):\s*(.*)$/);
+    const row = line.match(/^\|\s*([^|]+?)\s*\|\s*([^|]*?)\s*\|$/);
+    const cur = sections.at(-1);
+    if (!cur) continue;
+    if (kv) cur.items.push([kv[1].trim(), kv[2].trim()]);
+    else if (row && !/^-+$/.test(row[1]) && row[1] !== 'File') cur.items.push([row[1], row[2]]);
+  }
+  return sections.filter(s => s.items.length);
+}
+
 function readText(file) { try { return fs.readFileSync(file, 'utf8'); } catch { return ''; } }
 
 function send(res, code, body, type = 'application/json') {
@@ -52,14 +68,16 @@ function send(res, code, body, type = 'application/json') {
 
 function serve() {
   http.createServer((req, res) => {
-    if (req.method === 'GET' && req.url === '/') return send(res, 200, readText(PAGE), 'text/html; charset=utf-8');
-    if (req.method === 'GET' && req.url === '/api/jobs') {
+    const url = new URL(req.url, 'http://localhost').pathname;
+    if (req.method === 'GET' && url === '/') return send(res, 200, readText(PAGE), 'text/html; charset=utf-8');
+    if (req.method === 'GET' && url === '/api/jobs') {
       const stat = fs.existsSync(JOBS) ? fs.statSync(JOBS) : null;
       return send(res, 200, { jobs: parseJobs(readText(JOBS)), updated: stat?.mtime ?? null, statuses: STATUSES, folder: DIR });
     }
-    const m = req.url.match(/^\/api\/jobs\/(\d+)$/);
+    if (req.method === 'GET' && url === '/api/profile') return send(res, 200, { sections: parseProfile(readText(path.join(DIR, 'profile.md'))) });
+    const m = url.match(/^\/api\/jobs\/(\d+)$/);
     // The custom header blocks other websites from posting here (browsers preflight it and we never allow CORS).
-    if (req.method === 'POST' && m && req.headers['x-job-autopilot'] === '1') {
+    if (req.method === 'POST' && m && req.headers['x-auto-job-hunt'] === '1') {
       let body = '';
       req.on('data', d => { body += d; if (body.length > 10000) req.destroy(); });
       req.on('end', () => {
@@ -88,6 +106,8 @@ function selfTest() {
   const after = parseJobs(updateJob(md, 1, 'Notes', 'call HR | Monday'))[0];
   assert(after.Notes === 'call HR / Monday' && after.Role === 'Sales Manager', 'update keeps other cells');
   assert(!EDITABLE.Status && EDITABLE.Notes('ok'), 'only notes are editable');
+  const prof = parseProfile('# P\n## Money\n- Notice period: 60 days\n- Blank:\n## Resumes\n| File | Use for |\n|---|---|\n| a.pdf | Sales |\n');
+  assert(prof.length === 2 && prof[0].items[0][1] === '60 days' && prof[1].items[0][0] === 'a.pdf', 'profile parse');
   let threw = false; try { updateJob(md, 9, 'Notes', 'x'); } catch { threw = true; }
   assert(threw, 'missing id throws');
   console.log('self-test ok');
