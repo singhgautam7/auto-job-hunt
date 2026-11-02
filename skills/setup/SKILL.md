@@ -29,6 +29,11 @@ Ask in small groups. Use clickable options when the app offers them (AskUserQues
 9. Home address (city and state is enough; many forms require it).
 10. Gender, for forms that ask (Male / Female / Other / Prefer not to say). Never assume it.
 
+**Your resume, ask both**
+- "Do you want me to review your resume first? I will tell you what is strong, what is missing and what to fix." (Yes / No)
+- "Is there anything from your current or past jobs that is not on your resume yet? For example a promotion, a target you hit, a big client, an award or a new skill." (Yes, let me tell you / No)
+If they say yes to either, run the `resume` skill's "Review and improve" step right after the questions, before suggesting titles or making versions.
+
 **Optional, ask in one go**
 11. A CV or longer profile, if different from the resume.
 12. Industries you like, and companies to avoid (suggest their current company).

@@ -52,5 +52,8 @@ Filled in by Claude during setup. You can edit any line. Claude reads this befor
 
 CV (optional):
 
+## Extra facts from me
+Things from my jobs that were not on my old resume. Claude may use these in resumes and cover letters.
+
 ## Saved answers to form questions
 Claude adds answers here when a form asks something new, so it never has to ask twice.

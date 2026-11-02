@@ -11,24 +11,31 @@ A Claude plugin that runs your job search for you. No tech skills needed.
 - Applies for you, slowly and safely, after you say yes (or right away, if you turn that on).
 - Shows everything on a dashboard in your browser: every job, when it was posted, when it was found, its status and your notes.
 
-## What you need
+## Install (one time, about 10 minutes)
 
-1. The **Claude desktop app** with a paid plan.
+1. **Claude Code**: install it from [claude.com/claude-code](https://claude.com/claude-code) and sign in. A paid Claude plan is needed.
 2. **Node.js** (free): go to [nodejs.org](https://nodejs.org), download the LTS version and install it.
-3. **Claude in Chrome** extension: [install it from the Chrome Web Store](https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn), click **Add to Chrome**, then sign in with your Claude account. Log in to Naukri and LinkedIn in Chrome yourself.
+3. **Google Chrome** with the **Claude extension**: [install it from the Chrome Web Store](https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn), click **Add to Chrome**, then sign in with your Claude account. Log in to Naukri and LinkedIn in Chrome yourself.
+4. Open the **Terminal** app and paste these two lines (if the Mac asks to install developer tools, click Install, then paste them again):
 
-## Install
-
-**Claude desktop, Code tab or Claude Code:**
-
-```
-/plugin marketplace add singhgautam7/auto-job-hunt
-/plugin install auto-job-hunt@auto-job-hunt
+```bash
+git clone https://github.com/singhgautam7/auto-job-hunt.git ~/auto-job-hunt
+bash ~/auto-job-hunt/install.sh
 ```
 
-**Claude desktop, Cowork:** download `auto-job-hunt.plugin` from the releases page, drop it into the chat and click to install.
+5. Open Claude in your new **Documents/Auto Job Hunt** folder and type **start**:
+   - Claude desktop app: Code tab, start a session and choose that folder.
+   - Or in Terminal: `cd ~/Documents/"Auto Job Hunt" && claude`
 
-Then say **"start"**. Claude asks its questions and opens your dashboard.
+Claude asks a few questions (it can also review your resume and add things that are missing), then opens your dashboard.
+
+Keep the `~/auto-job-hunt` folder: the plugin runs from it.
+
+**To update later:**
+
+```bash
+cd ~/auto-job-hunt && git pull && bash install.sh
+```
 
 ## How to use it
 

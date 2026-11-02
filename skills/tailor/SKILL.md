@@ -9,7 +9,7 @@ Follow the talking rules and hard rules in the workspace `CLAUDE.md`. Work in th
 
 ## The one rule that matters
 
-**Every fact must come from the user's resume, CV, `profile.md` or the user's own words in this chat.** You may reorder, choose what to show, shorten, and use the job's words for things the user really did. You may never add a number, company, title, date, tool, skill, degree or result that is not in those sources. If a strong point is missing (for example a sales target they hit), ask the user one short question and save the answer under "Saved answers" in `profile.md`. Never fill a gap with a guess.
+**Every fact must come from the user's resume, CV, `profile.md` (including "Extra facts from me") or the user's own words in this chat.** You may reorder, choose what to show, shorten, and use the job's words for things the user really did. You may never add a number, company, title, date, tool, skill, degree or result that is not in those sources. If a strong point is missing (for example a sales target they hit), ask the user one short question and save the answer under "Saved answers" in `profile.md`. Never fill a gap with a guess.
 
 ## 1. Read
 
