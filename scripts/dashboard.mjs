@@ -101,7 +101,11 @@ function route(req, res) {
       const stat = fs.existsSync(JOBS) ? fs.statSync(JOBS) : null;
       return send(res, 200, { jobs: parseJobs(readText(JOBS)), updated: stat?.mtime ?? null, statuses: STATUSES, folder: DIR });
     }
-    if (req.method === 'GET' && url === '/api/profile') return send(res, 200, { sections: parseProfile(readText(path.join(DIR, 'profile.md'))) });
+    if (req.method === 'GET' && url === '/api/profile') {
+      let backups = [];
+      try { backups = fs.readdirSync(path.join(DIR, '.backups')).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort().reverse(); } catch {}
+      return send(res, 200, { sections: parseProfile(readText(path.join(DIR, 'profile.md'))), backups });
+    }
     const m = url.match(/^\/api\/jobs\/(\d+)$/);
     // The custom header blocks other websites from posting here (browsers preflight it and we never allow CORS).
     if (req.method === 'POST' && m && req.headers['x-auto-job-hunt'] === '1') {

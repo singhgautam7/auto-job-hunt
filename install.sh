@@ -1,7 +1,7 @@
 #!/bin/bash
-# Installs (or updates) Auto Job Hunt in Claude Code from this cloned folder.
+# Installs (or updates) Auto Job Hunt in Claude Code from this folder.
 # First time:  bash install.sh
-# To update:   git pull && bash install.sh
+# To update:   git pull && bash install.sh   (or download the new ZIP and run its install.sh)
 set -e
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
@@ -10,20 +10,26 @@ if ! command -v node >/dev/null 2>&1; then
   open "https://nodejs.org/en/download" 2>/dev/null || true
   exit 1
 fi
-if ! command -v claude >/dev/null 2>&1; then
-  echo "Claude Code is not installed. Install it from https://claude.com/claude-code, then run this again."
+# The claude command: on PATH, or where Anthropic's installer puts it.
+CLAUDE="$(command -v claude || true)"
+[ -z "$CLAUDE" ] && [ -x "$HOME/.local/bin/claude" ] && CLAUDE="$HOME/.local/bin/claude"
+if [ -z "$CLAUDE" ]; then
+  echo "The claude command is not installed. Run this, then run install.sh again:"
+  echo "  curl -fsSL https://claude.ai/install.sh | bash"
   exit 1
 fi
 
-if claude plugin marketplace list 2>/dev/null | grep -q "auto-job-hunt"; then
-  claude plugin marketplace update auto-job-hunt
-  claude plugin update auto-job-hunt@auto-job-hunt || claude plugin install auto-job-hunt@auto-job-hunt
-else
-  claude plugin marketplace add "$DIR"
-  claude plugin install auto-job-hunt@auto-job-hunt
+# Point the plugin at this folder. Removing first also handles a new download in a different folder.
+"$CLAUDE" plugin marketplace remove auto-job-hunt >/dev/null 2>&1 || true
+if ! "$CLAUDE" plugin marketplace add "$DIR"; then
+  echo "Could not register this folder with Claude Code. Check the folder has .claude-plugin/marketplace.json and try again."
+  exit 1
+fi
+if ! "$CLAUDE" plugin install auto-job-hunt@auto-job-hunt; then
+  "$CLAUDE" plugin update auto-job-hunt@auto-job-hunt || { echo "Could not install the plugin. Run: claude plugin install auto-job-hunt@auto-job-hunt"; exit 1; }
 fi
 
 mkdir -p "$HOME/Documents/Auto Job Hunt"
 echo
-echo "Auto Job Hunt is installed."
-echo "Next: open Claude in the folder Documents/Auto Job Hunt and type: start"
+echo "Auto Job Hunt is installed from: $DIR"
+echo "Keep this folder. Next: open Claude in Documents/Auto Job Hunt and type: start"

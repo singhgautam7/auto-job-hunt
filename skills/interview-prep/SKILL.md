@@ -38,4 +38,12 @@ Offer: "Want to practise? I will ask the questions one by one and give quick fee
 
 When the user tells you how it went, add a one-line note to the job, update Status (`Offer`, `Rejected`, or keep `Interview` for the next round), and save any new true facts they mentioned under "Extra facts from me" in `profile.md`.
 
+## 6. Got an offer
+
+When the user says they got an offer (or Status becomes `Offer`):
+1. Ask for the offer details if not given: fixed pay, variable or bonus, joining bonus, stock, notice buyout, joining date, location, and the deadline to reply.
+2. Compare with `profile.md`: fixed pay against the minimum and expected, and with their current pay. If there are several offers, show them side by side in a small table. Point out anything missing from the letter (fixed vs variable split, probation, notice period).
+3. If they want to negotiate, draft a short, polite reply using only true reasons (their expected pay, another offer if real, notice buyout). Send only after their yes (hard rule 8).
+4. When they accept or decline, update Status and Notes.
+
 End with the dashboard line.

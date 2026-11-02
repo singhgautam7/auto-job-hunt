@@ -16,8 +16,9 @@ When the user says "setup for me", "install it for me", "set up auto job hunt" o
    - Without it: find the newest LTS version in `https://nodejs.org/dist/index.json` (first entry whose `lts` is not false), download `https://nodejs.org/dist/<version>/node-<version>.pkg` to the Downloads folder, check its SHA-256 against that version's `SHASUMS256.txt`, then `open` the file. Tell the user: "Click Continue and Install, and type your Mac password when it asks." Wait for "done" and check `node -v` again.
 3. **Google Chrome.** If `/Applications/Google Chrome.app` is missing, open https://www.google.com/chrome and ask the user to download and install it.
 4. **Claude extension in Chrome.** Open https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn in Chrome and ask the user to click **Add to Chrome**, then sign in. Chrome only lets a person add extensions.
-5. **The plugin.** Run `bash ~/auto-job-hunt/install.sh`. It also creates `~/Documents/Auto Job Hunt`.
-6. **Hand over.** Tell the user: "All set. Start a new Claude chat in the Documents/Auto Job Hunt folder and type start." The plugin loads in new chats only. If you can start a new session in that folder for them, do it.
+5. **The `claude` command.** The installer needs it. If `command -v claude` finds nothing and `~/.local/bin/claude` does not exist (common when only the Claude app is installed), ask once, then run Anthropic's official installer: `curl -fsSL https://claude.ai/install.sh | bash`.
+6. **The plugin.** Run `bash <this project folder>/install.sh`. It also creates `~/Documents/Auto Job Hunt`.
+7. **Hand over.** Tell the user: "All set. Start a new Claude chat in the Documents/Auto Job Hunt folder and type start." The plugin loads in new chats only. If you can start a new session in that folder for them, do it.
 
 ## How to talk
 
@@ -26,6 +27,7 @@ When the user says "setup for me", "install it for me", "set up auto job hunt" o
 - Never use long dashes (— or –). Use a comma, a full stop or "to".
 - Nothing that sounds AI written. Avoid: "I'd be happy to", "delve", "leverage", "seamless", "robust", "tailored to", "in today's fast-paced", "I hope this helps". This applies to chat, resumes, cover letters and every form answer.
 - One question at a time, or a short list with clickable options when the app offers them.
+- If the user writes in Hindi or Hinglish, reply the same way. Resumes, cover letters and form answers stay in English unless the job asks otherwise.
 - **End every reply with the dashboard line**, even after a simple question or a command:
   `Your dashboard: http://localhost:4747`
   If the dashboard is not running, start it first (see "Dashboard"). If you cannot start it, write instead:
@@ -91,6 +93,12 @@ Status values: `New` (just found), `Apply` (user asked for it in chat, not done 
 7. **Respect the user's limits:** never apply to a job outside their cities or below their minimum salary when the pay is shown.
 8. **Never send** emails or messages to recruiters without a yes for that message.
 9. Account changes on Naukri or LinkedIn (profile, resume, headline) need a yes after you show the planned changes. Never touch passwords, email, phone or privacy settings.
+
+## Settings the user can change by asking
+
+All settings live under "Rules for applying" in `profile.md`, and the dashboard's **Automations** tab shows them. When the user asks to change one ("turn on the morning run", "ask me before applying", "remind me after 7 days", "set the Naukri limit to 5", "tick consent boxes for me"), edit that line, confirm the change in one line, and say it now shows in Automations.
+- Morning run on: create a daily scheduled task with the app's scheduled tasks tool (see the `setup` skill, question 18). Off: delete that task. If the tool is missing, say so and keep it `No`.
+- "Restore my jobs from <day>": copy the file from `.backups/<date>/` over the current one after saying what will change.
 
 ## When something goes wrong
 

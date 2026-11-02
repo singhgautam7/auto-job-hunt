@@ -18,7 +18,7 @@ Drop any job that breaks the user's limits (city, minimum pay, companies to avoi
 Never apply twice: skip a job if `jobs.md` already has the same company and role as `Applied` (it may have come from another site).
 Daily limits: count rows with Applied = today. Stop at `Max applications per day`, and at the per-site limit for Naukri and LinkedIn.
 
-Before applying, check the list is still open: `node app/scripts/check-live.mjs --jobs jobs.md --ids <ids> --mark`. Drop the ones it marks closed. Jobs it lists under `check_in_browser` are checked when you open them.
+Unless `profile.md` says `Check closed jobs before applying: No`, check the list is still open before applying: `node app/scripts/check-live.mjs --jobs jobs.md --ids <ids> --mark`. Drop the ones it marks closed. Jobs it lists under `check_in_browser` are checked when you open them.
 
 ## 2. Yes or automatic
 

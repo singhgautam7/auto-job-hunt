@@ -19,11 +19,15 @@ If any job's Notes say "Needs you", ask those questions now in one go, save the 
 
 ## 2a. Follow-ups
 
-Jobs with Status `Applied`, applied 10 or more days ago, with no "Followed up" in Notes, are due a follow-up (the dashboard lists them under "Needs you"). Offer: "N applications have had no reply for 10+ days. Want me to draft short follow-up messages?" On yes, write a 3 to 4 line polite message per job (to the recruiter or hiring manager on LinkedIn if you can find them, else for the company's careers email if the post gives one), using only true facts. Show them. Send one only after the user says yes to it (hard rule 8), or let the user send it. Then add "Followed up <date>" to Notes.
+Jobs with Status `Applied`, applied at least `Follow up after (days)` ago (from `profile.md`, default 10), with no "Followed up" in Notes, are due a follow-up (the dashboard lists them under "Needs you"). Offer: "N applications have had no reply for 10+ days. Want me to draft short follow-up messages?" On yes, write a 3 to 4 line polite message per job (to the recruiter or hiring manager on LinkedIn if you can find them, else for the company's careers email if the post gives one), using only true facts. Show them. Send one only after the user says yes to it (hard rule 8), or let the user send it. Then add "Followed up <date>" to Notes.
 
-## 2b. Keep Naukri fresh
+## 2b. Referrals (when they help)
 
-Naukri shows recently updated profiles higher. If the user has a Naukri account and `Naukri profile last updated` in `profile.md` is empty or more than 14 days ago, ask: "Your Naukri profile was last updated on <date>. Refresh it now with your latest resume? It helps recruiters find you." On yes, run the `job-site-profile` skill (Naukri part only).
+For a job scoring 4 or more, if LinkedIn shows someone the user knows at that company ("connections work here"), offer: "You know N people at <company>. Want me to draft a short referral request?" Draft 3 to 4 lines with the job link and one true reason they fit. Send only after the user says yes to that message (hard rule 8), then add "Referral asked <name> <date>" to Notes.
+
+## 2c. Keep Naukri fresh
+
+Naukri shows recently updated profiles higher. If the user has a Naukri account and `Naukri profile last updated` in `profile.md` is empty or older than `Naukri refresh every (days)` (default 14), ask: "Your Naukri profile was last updated on <date>. Refresh it now with your latest resume? It helps recruiters find you." On yes, run the `job-site-profile` skill (Naukri part only).
 
 ## 3. Find jobs
 

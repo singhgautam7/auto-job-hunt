@@ -12,7 +12,7 @@
   // Theme before first paint: saved choice, else the system setting.
   (function () {
     let mode = null;
-    try { mode = localStorage.getItem('ajh-mode'); } catch {}
+    try { mode = new URLSearchParams(location.search).get('theme') || localStorage.getItem('ajh-mode'); } catch {}
     if (mode !== 'light' && mode !== 'dark') mode = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     document.documentElement.dataset.mode = mode;
   })();
@@ -174,13 +174,22 @@
   td.nw { white-space: nowrap; }
   .row-actions { display: flex; gap: 4px; justify-content: flex-end; }
   .row-actions .icon-btn { width: 40px; height: 40px; position: relative; }
-  .row-actions .icon-btn.has-note::after { content: ""; position: absolute; top: 9px; right: 9px; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 2px var(--surface-low); }
+  .row-actions .icon-btn.has-note { background: var(--secondary-container); color: var(--on-secondary-container); }
+  .row-actions .icon-btn.has-note::after { content: "1"; position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: var(--primary); color: var(--on-primary); font-size: 10px; font-weight: 700; line-height: 16px; text-align: center; box-shadow: 0 0 0 2px var(--surface-low); }
   .foot { padding: 12px 16px; color: var(--on-surface-variant); font-size: 12px; border-top: 1px solid var(--outline-variant); }
 
   /* Profile */
   .kv { display: grid; grid-template-columns: minmax(120px, 42%) 1fr; gap: 10px 16px; margin: 0; }
   .kv dt { color: var(--on-surface-variant); font-size: 13px; }
   .kv dd { margin: 0; font-weight: 550; overflow-wrap: anywhere; }
+  .auto-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .auto-card { display: flex; flex-direction: column; gap: 8px; }
+  .auto-card .top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .auto-card .detail { color: var(--on-surface-variant); font-size: 13px; }
+  .auto-card .how { font-size: 12px; color: var(--on-surface-variant); border-top: 1px solid var(--outline-variant); padding-top: 8px; margin-top: auto; }
+  .s-on { background: var(--st-green-bg); color: var(--st-green-fg); }
+  .s-off { background: var(--st-slate-bg); color: var(--st-slate-fg); }
+  .s-due { background: var(--st-amber-bg); color: var(--st-amber-fg); }
   .banner { display: flex; gap: 12px; align-items: center; padding: 14px 18px; border-radius: var(--r-l); background: var(--primary-container); color: var(--on-primary-container); margin-bottom: 16px; font-weight: 550; }
 
   /* Dialog */
@@ -207,6 +216,7 @@
   @media (max-width: 960px) {
     .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .two, .three { grid-template-columns: 1fr; }
+    .auto-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .hide-md { display: none; }
   }
   @media (max-width: 600px) {
@@ -215,6 +225,7 @@
     .hide-sm { display: none; }
     .live span { display: none; }
     .tabs { display: none; }
+    .auto-grid { grid-template-columns: 1fr; }
     .tab-select-wrap { display: block; margin: 4px 0 20px; }
     .tab-select { width: 100%; font-weight: 600; }
     .quote { align-items: flex-start; }
@@ -239,6 +250,7 @@
   <symbol id="i-warn" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></symbol>
   <symbol id="i-quote" viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
+  <symbol id="i-auto" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>
 </svg>
 
@@ -255,11 +267,12 @@
     <button class="tab sl" role="tab" data-tab="overview" aria-selected="true"><svg class="ic"><use href="#i-dash"/></svg>Overview</button>
     <button class="tab sl" role="tab" data-tab="jobs" aria-selected="false"><svg class="ic"><use href="#i-list"/></svg>Jobs <span class="count" id="c-jobs">0</span></button>
     <button class="tab sl" role="tab" data-tab="applied" aria-selected="false"><svg class="ic"><use href="#i-send"/></svg>Applications <span class="count" id="c-applied">0</span></button>
+    <button class="tab sl" role="tab" data-tab="automations" aria-selected="false"><svg class="ic"><use href="#i-auto"/></svg>Automations <span class="count" id="c-review">0</span></button>
     <button class="tab sl" role="tab" data-tab="profile" aria-selected="false"><svg class="ic"><use href="#i-person"/></svg>My profile</button>
   </nav>
   <label class="tab-select-wrap"><span class="sr">Section</span>
     <select class="select tab-select" id="tab-select">
-      <option value="overview">Overview</option><option value="jobs">Jobs</option><option value="applied">Applications</option><option value="profile">My profile</option>
+      <option value="overview">Overview</option><option value="jobs">Jobs</option><option value="applied">Applications</option><option value="automations">Automations</option><option value="profile">My profile</option>
     </select>
   </label>
 
@@ -312,6 +325,12 @@
     </div>
   </section>
 
+  <section class="view" id="v-automations" role="tabpanel" aria-label="Automations">
+    <div class="banner"><svg class="ic"><use href="#i-info"/></svg>Everything Claude does for you on its own, and the settings it follows. To change one, just tell Claude, for example "turn on the morning run".</div>
+    <div class="card" style="margin-bottom:16px"><h2>Needs your review</h2><p class="sub">Things only you can do, and follow-ups that are due</p><div class="list" id="auto-needs"></div></div>
+    <div class="grid auto-grid" id="automations"></div>
+  </section>
+
   <section class="view" id="v-profile" role="tabpanel" aria-label="My profile">
     <div class="banner"><svg class="ic"><use href="#i-info"/></svg>Claude uses this for every search and application. To change anything, just tell Claude.</div>
     <div class="grid two" id="profile"></div>
@@ -344,7 +363,7 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const APPLIED = ['Applied', 'Interview', 'Offer', 'Rejected'];
 const DAY = 864e5;
-let jobs = [], statuses = [], profile = [], filterStatus = '', sortKey = 'Score', sortDir = -1, lastStamp = null;
+let jobs = [], statuses = [], profile = [], backups = [], statusFilter = new Set(), sortKey = 'Score', sortDir = -1, lastStamp = null;
 
 // ---------- data helpers ----------
 const toDate = s => { if (!s) return null; const d = new Date(String(s).replace(' ', 'T')); return isNaN(d) ? null : d; };
@@ -459,9 +478,7 @@ function renderOverview() {
 
   const best = jobs.filter(j => !isApplied(j) && j.Status !== 'Skip' && num(j.Score) !== null).sort((a, b) => num(b.Score) - num(a.Score)).slice(0, 5);
   $('best').innerHTML = best.length ? best.map(j => listItem(j)).join('') : '<div class="empty">No open matches right now</div>';
-  const needs = jobs.filter(j => /needs you/i.test(j.Notes)).map(j => listItem(j, j.Notes));
-  const follow = followUps().map(j => listItem(j, `Follow up: applied ${daysSince(j.Applied)} days ago. Ask Claude to draft a message.`));
-  $('needs').innerHTML = [...needs, ...follow].join('') || '<div class="empty">All clear. Nothing needs you.</div>';
+  $('needs').innerHTML = reviewItems().join('') || '<div class="empty">All clear. Nothing needs you.</div>';
 }
 // warn: a message to show instead of the location, with a warning icon instead of the score.
 function listItem(j, warn) {
@@ -470,7 +487,15 @@ function listItem(j, warn) {
 }
 const daysSince = s => { const d = toDate(s); return d ? Math.floor((Date.now() - d) / DAY) : 0; };
 // Applied 10 or more days ago, no reply recorded, not followed up yet.
-const followUps = () => jobs.filter(j => j.Status === 'Applied' && daysSince(j.Applied) >= 10 && !/followed up/i.test(j.Notes));
+// Settings saved in profile.md, by their label.
+const setting = (label, fallback = '') => { for (const s of profile) for (const [k, v] of s.items) if (k === label && v && !/^\(.*\)$/.test(v)) return v; return fallback; };
+const followDays = () => parseInt(setting('Follow up after (days)', '10'), 10) || 10;
+// Applied long enough ago, no reply recorded, not followed up yet.
+const followUps = () => jobs.filter(j => j.Status === 'Applied' && daysSince(j.Applied) >= followDays() && !/followed up/i.test(j.Notes));
+const reviewItems = () => [
+  ...jobs.filter(j => /needs you/i.test(j.Notes)).map(j => listItem(j, j.Notes)),
+  ...followUps().map(j => listItem(j, `Follow up: applied ${daysSince(j.Applied)} days ago. Ask Claude to draft a message.`)),
+];
 
 const COLS = [
   ['Role', 'Job'], ['Location', 'Location', 'hide-md'], ['Posted', 'Posted'], ['Found', 'Found', 'hide-md'],
@@ -479,7 +504,7 @@ const COLS = [
 function renderJobs() {
   const counts = Object.fromEntries(statuses.map(s => [s, jobs.filter(j => j.Status === s).length]));
   $('f-status').innerHTML = [['', 'All', jobs.length], ...statuses.filter(s => counts[s]).map(s => [s, s, counts[s]])]
-    .map(([v, l, n]) => `<button class="chip sl" data-s="${v}" aria-pressed="${v === filterStatus}">${l} <span class="n">${n}</span></button>`).join('');
+    .map(([v, l, n]) => `<button class="chip sl" data-s="${v}" aria-pressed="${v ? statusFilter.has(v) : !statusFilter.size}">${l} <span class="n">${n}</span></button>`).join('');
   $('jobs-head').innerHTML = COLS.map(([k, l, c]) => `<th class="${c || ''}" ${k ? `data-k="${k}"` : ''}${k === sortKey ? ` aria-sort="${sortDir > 0 ? 'ascending' : 'descending'}"` : ''}>${l}${k === sortKey ? (sortDir > 0 ? ' ↑' : ' ↓') : ''}</th>`).join('');
 
   const list = visibleJobs();
@@ -489,7 +514,7 @@ function visibleJobs() {
   const q = $('q').value.trim().toLowerCase(), src = $('f-source').value, age = +$('f-age').value, min = +$('f-score').value;
   const since = age ? Date.now() - age * DAY : 0;
   return jobs.filter(j =>
-    (!filterStatus || j.Status === filterStatus) && (!src || sourceName(j.Source) === src) && (!min || num(j.Score) >= min) &&
+    (!statusFilter.size || statusFilter.has(j.Status)) && (!src || sourceName(j.Source) === src) && (!min || num(j.Score) >= min) &&
     (!since || toDate(j.Posted)?.getTime() >= since) &&
     (!q || [j.Company, j.Role, j.Location, j.Notes, j.Verdict].join(' ').toLowerCase().includes(q))
   ).sort((a, b) => {
@@ -532,14 +557,37 @@ function renderApplied() {
     : '<tr><td colspan="6" class="empty">No applications yet. Claude adds them here as it applies.</td></tr>';
 }
 
+function renderAutomations() {
+  $('auto-needs').innerHTML = reviewItems().join('') || '<div class="empty">All clear. Nothing needs you.</div>';
+  const on = v => /^yes|^on|^every|^when|^only/i.test(v);
+  const card = (title, state, detail, how) => `<div class="card auto-card"><div class="top"><h2>${esc(title)}</h2><span class="pill ${state[1]}">${esc(state[0])}</span></div><div class="detail">${detail}</div><div class="how">${esc(how)}</div></div>`;
+  const morning = setting('Morning run', 'No'), auto = setting('Apply automatically', 'No'), closed = setting('Check closed jobs before applying', 'Yes');
+  const nDays = parseInt(setting('Naukri refresh every (days)', '14'), 10) || 14, nLast = setting('Naukri profile last updated');
+  const nDue = setting('Naukri account', 'No') !== 'No' && (!nLast || daysSince(nLast) >= nDays);
+  const fu = followUps().length;
+  $('automations').innerHTML = [
+    card('Morning run', on(morning) ? ['On', 's-on'] : ['Off', 's-off'], on(morning) ? `Runs ${esc(morning.replace(/^yes\s*/i, ''))}: finds jobs, then applies if automatic applying is on.` : 'Nothing runs by itself. Say "start" whenever you want.', 'Change: "turn on the morning run" or "turn off the morning run"'),
+    card('Apply automatically', on(auto) ? ['On', 's-on'] : ['Off', 's-off'], on(auto) ? `Jobs scoring ${esc(setting('Only apply when match score is at least', '4'))}+ in your cities, up to ${esc(setting('Max applications per day', '20'))} a day.` : 'Claude shows the best matches and asks before applying.', 'Change: "apply automatically" or "ask me before applying"'),
+    card('Naukri and LinkedIn limit', [`${esc(setting('Daily limit per site on Naukri and LinkedIn', '10'))} a day`, 's-on'], 'Applies slowly on each site and stops on any warning, to keep your accounts safe.', 'Change: "set the Naukri limit to 5"'),
+    card('Closed-job check', on(closed) ? ['On', 's-on'] : ['Off', 's-off'], 'Checks each job is still open before applying. Closed ones are marked Closed.', 'Run now: "are my jobs still open?"'),
+    card('Follow-up reminders', fu ? [`${fu} due`, 's-due'] : ['On', 's-on'], `After ${followDays()} days with no reply, Claude offers to draft a short follow-up. Nothing is sent without your yes.`, 'Change: "remind me after 7 days"'),
+    card('Naukri profile refresh', nDue ? ['Due', 's-due'] : ['On', 's-on'], `Every ${nDays} days. Last updated: ${esc(nLast || 'never')}.`, 'Run now: "update my Naukri"'),
+    card('Cover letters', [esc(setting('Cover letters', 'Only when needed')), 's-on'], `Job-specific resume: ${esc(setting('Job-specific resume', 'When needed'))}. Facts come only from your resume and answers.`, 'Change: "write a cover letter for every application"'),
+    card('Consent boxes', on(setting('Tick consent boxes', 'No')) ? ['Claude ticks', 's-on'] : ['You tick', 's-off'], 'Privacy notices and standard candidate NDAs on forms. Claude reads them first and stops on anything unusual.', 'Change: "tick consent boxes for me" or "leave them for me"'),
+    card('Daily backups', backups.length ? ['On', 's-on'] : ['Starts next chat', 's-off'], backups.length ? `Last backup: ${esc(backups[0])}. Keeping ${backups.length} of the last 14 days.` : 'A copy of your job list and profile is saved each day you open a chat.', 'Restore: "restore my jobs from yesterday"'),
+  ].join('');
+}
+
 function renderProfile() {
-  $('profile').innerHTML = profile.length ? profile.map(s => `<div class="card"><h2 style="margin-bottom:14px">${esc(s.title)}</h2><dl class="kv">${s.items.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v) || '<span class="m">Not set</span>'}</dd>`).join('')}</dl></div>`).join('')
+  $('profile').innerHTML = profile.length ? profile.filter(s => s.title !== 'Rules for applying').map(s => `<div class="card"><h2 style="margin-bottom:14px">${esc(s.title)}</h2><dl class="kv">${s.items.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v) || '<span class="m">Not set</span>'}</dd>`).join('')}</dl></div>`).join('')
     : '<div class="card empty">No profile yet. Tell Claude "start" to set it up.</div>';
 }
 
 function renderAll() {
   $('c-jobs').textContent = jobs.length;
   $('c-applied').textContent = jobs.filter(isApplied).length;
+  $('c-review').textContent = reviewItems().length;
+  $('tab-select').options[3].text = `Automations (${reviewItems().length} to review)`;
   $('tab-select').options[1].text = `Jobs (${jobs.length})`;
   $('tab-select').options[2].text = `Applications (${jobs.filter(isApplied).length})`;
   const srcSel = $('f-source'), cur = srcSel.value;
@@ -549,6 +597,7 @@ function renderAll() {
   if (tab === 'overview') renderOverview();
   if (tab === 'jobs') renderJobs();
   if (tab === 'applied') renderApplied();
+  if (tab === 'automations') renderAutomations();
   if (tab === 'profile') renderProfile();
 }
 
@@ -600,7 +649,8 @@ document.addEventListener('click', e => {
   const row = e.target.closest('tr[data-id], .li[data-id]');
   if (row) return openJob(row.dataset.id);
   const chip = e.target.closest('#f-status .chip');
-  if (chip) { filterStatus = chip.dataset.s; renderJobs(); }
+  // Status chips combine: pick several to see them together; "All" clears the choice.
+  if (chip) { const v = chip.dataset.s; if (!v) statusFilter.clear(); else if (!statusFilter.delete(v)) statusFilter.add(v); renderJobs(); }
   const th = e.target.closest('th[data-k]');
   if (th) { sortDir = sortKey === th.dataset.k ? -sortDir : -1; sortKey = th.dataset.k; renderJobs(); }
 });
@@ -632,9 +682,9 @@ async function load() {
     const [d, p] = await Promise.all([fetch('/api/jobs', { cache: 'no-store' }).then(r => r.json()), fetch('/api/profile', { cache: 'no-store' }).then(r => r.json())]);
     $('live').classList.remove('off');
     $('updated').textContent = d.updated ? `Updated ${new Date(d.updated).toLocaleString(undefined, { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}` : 'No jobs yet. Ask Claude to find jobs.';
-    const stamp = d.updated + JSON.stringify(p).length;
+    const stamp = d.updated + JSON.stringify(p);
     if (stamp === lastStamp) return;
-    lastStamp = stamp; jobs = d.jobs; statuses = d.statuses; profile = p.sections || [];
+    lastStamp = stamp; jobs = d.jobs; statuses = d.statuses; profile = p.sections || []; backups = p.backups || [];
     renderAll();
   } catch {
     $('live').classList.add('off');
