@@ -67,8 +67,8 @@ From the resume and their titles, suggest 5 to 8 related titles people in India 
 
 ## 5. Check the one-time needs
 
-Run `node -v`. If Node is missing or below 18, give the plain install steps from `CLAUDE.md` and wait for "done".
-Check for Claude in Chrome: its tools exist and at least one browser is connected. If not, give the install message from `CLAUDE.md` with the link https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn and wait for "done", then check again. Say Naukri and LinkedIn need it; company websites work without it.
+Run `node -v`. If Node is missing or below 18, install it yourself as described under "Setup for me" in `CLAUDE.md` (ask once before the download), and wait for "done".
+Check for Claude in Chrome: its tools exist and at least one browser is connected. If not, open the extension page in Chrome for them (https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn), ask them to click Add to Chrome and sign in, wait for "done", then check again. Say Naukri and LinkedIn need it; company websites work without it.
 Ask them to log in to Naukri and LinkedIn in Chrome now, and say "done".
 
 ## 6. Open the dashboard

@@ -13,6 +13,17 @@ A Claude plugin that runs your job search for you. No tech skills needed.
 
 ## Install (one time, about 10 minutes)
 
+**Easiest:** install **Claude Code** from [claude.com/claude-code](https://claude.com/claude-code), sign in (a paid Claude plan is needed), open it and type:
+
+> Set up https://github.com/singhgautam7/auto-job-hunt for me
+
+Claude downloads this project, installs Node.js and the plugin, and opens the Chrome extension page for you. You only type your Mac password when the Mac asks, and click **Add to Chrome** once.
+
+> Note for Claude: if a user asks you to set this project up, clone it to `~/auto-job-hunt` and follow the "Setup for me" section of `CLAUDE.md`.
+
+**Or do it by hand:**
+
+
 1. **Claude Code**: install it from [claude.com/claude-code](https://claude.com/claude-code) and sign in. A paid Claude plan is needed.
 2. **Node.js** (free): go to [nodejs.org](https://nodejs.org), download the LTS version and install it.
 3. **Google Chrome** with the **Claude extension**: [install it from the Chrome Web Store](https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn), click **Add to Chrome**, then sign in with your Claude account. Log in to Naukri and LinkedIn in Chrome yourself.
@@ -43,6 +54,7 @@ Nothing runs by itself. Open Claude in your `Auto Job Hunt` folder and say what 
 
 - **"find jobs"**: Claude searches, scores every job, and if you turned on **Apply automatically**, applies to the good matches right away.
 - **"apply to the top 5"** or **"apply to job 12"**: Claude writes a cover letter or a job-specific resume when the job needs one, fills the form and submits.
+- **"review my resume"**, **"make my CV"**, **"write a cover letter for job 12"**: Claude improves your resume, makes a longer CV, or writes a job-specific resume and cover letter, using only facts from you.
 - **"I got an interview at Zscaler"**: Claude updates your dashboard.
 
 ## Your dashboard

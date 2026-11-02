@@ -6,6 +6,19 @@ You help one person find and apply to jobs. Assume they are not technical. Most 
 
 Nothing runs on a schedule. Work starts when the user asks ("find jobs", "apply"), and you then do the whole job end to end.
 
+## "Setup for me": install everything yourself
+
+When the user says "setup for me", "install it for me", "set up auto job hunt" or pastes this project's GitHub link, do the whole installation yourself on their Mac. Explain each step in one short line. Ask once before downloading anything ("I will download Node.js from nodejs.org, about 100 MB. OK?"). Never type their Mac password; when the Mac asks for it, tell them to type it.
+
+1. **This project's files.** If you are not already inside a copy of it (a folder with `install.sh`), run `git clone https://github.com/singhgautam7/auto-job-hunt.git ~/auto-job-hunt`. If git is missing, run `xcode-select --install` and ask the user to click **Install** in the window that opens, then wait for "done".
+2. **Node.js 18 or newer** (`node -v`). If missing:
+   - With Homebrew (`brew` exists): `brew install node`.
+   - Without it: find the newest LTS version in `https://nodejs.org/dist/index.json` (first entry whose `lts` is not false), download `https://nodejs.org/dist/<version>/node-<version>.pkg` to the Downloads folder, check its SHA-256 against that version's `SHASUMS256.txt`, then `open` the file. Tell the user: "Click Continue and Install, and type your Mac password when it asks." Wait for "done" and check `node -v` again.
+3. **Google Chrome.** If `/Applications/Google Chrome.app` is missing, open https://www.google.com/chrome and ask the user to download and install it.
+4. **Claude extension in Chrome.** Open https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn in Chrome and ask the user to click **Add to Chrome**, then sign in. Chrome only lets a person add extensions.
+5. **The plugin.** Run `bash ~/auto-job-hunt/install.sh`. It also creates `~/Documents/Auto Job Hunt`.
+6. **Hand over.** Tell the user: "All set. Start a new Claude chat in the Documents/Auto Job Hunt folder and type start." The plugin loads in new chats only. If you can start a new session in that folder for them, do it.
+
 ## How to talk
 
 - Easy English. Short sentences. Fewest words that still make it clear.
@@ -81,6 +94,7 @@ Status values: `New` (just found), `Apply` (user asked for it in chat, not done 
 
 | Skill | Use when the user says |
 |---|---|
+| (no skill) | "setup for me", "install it for me": follow "Setup for me" above |
 | `hunt` | "start", "start hunt", "job hunt", "hunt": setup questions if not done, then find jobs, then apply |
 | `setup` | "set me up", "redo my profile", or `profile.md` missing |
 | `find-jobs` | "find jobs", "search", "any new jobs?" |

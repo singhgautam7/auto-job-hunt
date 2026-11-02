@@ -1,6 +1,6 @@
 ---
 name: resume
-description: Makes resume versions for the user from their own resume, one per kind of job, with the same facts and a different headline and summary. Saves Word and PDF files in the resumes folder and records which version goes with which job titles. Use when the user says "make my resume", "resume for sales manager", "fix my resume", "change my resume", or during setup.
+description: Reviews and improves the user's resume, makes resume versions (one per kind of job, same facts, different headline and summary), and makes a longer CV. Saves Word and PDF files in the resumes folder and records which version goes with which job titles. Use when the user says "make my resume", "review my resume", "make my CV", "resume for sales manager", "fix my resume", "change my resume", or during setup.
 ---
 
 # Resume versions
@@ -37,6 +37,13 @@ Show the plan in a short list and go ahead unless they object.
 - If the user wants to edit together and Claude Docs is available, also put the main version in a Doc and share the link.
 
 Writing rules: plain words, numbers kept exactly as given, no long dashes, no buzzwords ("results-driven", "dynamic", "synergy", "spearheaded"), no first person ("I").
+
+## 2b. CV (when the user asks for one)
+
+In India a CV usually means a longer, complete version of the resume. Build it from the same facts, with nothing left out:
+- every job with all real bullets, projects with what they did and the result, certifications, training, awards, languages, and personal details only if the user wants them (date of birth, address);
+- same plain style and rules as the resume; 2 to 4 pages is fine.
+Save it as `resumes/<first>-<last>-cv.html` and `.pdf` (and Word if the docx skill is available), and add it to `profile.md` as "CV". Use the CV only where a job or form asks for a CV or a detailed profile.
 
 ## 3. Check
 
