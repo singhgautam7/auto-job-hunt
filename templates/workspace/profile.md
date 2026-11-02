@@ -39,6 +39,7 @@ Filled in by Claude during setup. You can edit any line. Claude reads this befor
 - Apply automatically: (Yes / No)
 - Only apply when match score is at least: 4
 - Max applications per day: 20
+- Morning run: No
 - Tick consent boxes: (Yes / No)
 - Cover letters: (Only when needed / Every application)
 - Job-specific resume: When needed

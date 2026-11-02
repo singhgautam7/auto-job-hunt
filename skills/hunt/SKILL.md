@@ -17,6 +17,10 @@ If the profile is complete, say "Welcome back" and the one or two most useful fa
 
 If any job's Notes say "Needs you", ask those questions now in one go, save the answers in `profile.md`, and finish those applications in step 4.
 
+## 2a. Follow-ups
+
+Jobs with Status `Applied`, applied 10 or more days ago, with no "Followed up" in Notes, are due a follow-up (the dashboard lists them under "Needs you"). Offer: "N applications have had no reply for 10+ days. Want me to draft short follow-up messages?" On yes, write a 3 to 4 line polite message per job (to the recruiter or hiring manager on LinkedIn if you can find them, else for the company's careers email if the post gives one), using only true facts. Show them. Send one only after the user says yes to it (hard rule 8), or let the user send it. Then add "Followed up <date>" to Notes.
+
 ## 2b. Keep Naukri fresh
 
 Naukri shows recently updated profiles higher. If the user has a Naukri account and `Naukri profile last updated` in `profile.md` is empty or more than 14 days ago, ask: "Your Naukri profile was last updated on <date>. Refresh it now with your latest resume? It helps recruiters find you." On yes, run the `job-site-profile` skill (Naukri part only).
@@ -30,6 +34,10 @@ Run the `find-jobs` skill: company career pages, then Naukri and LinkedIn when C
 Run the `apply` skill:
 - `Apply automatically: Yes` in `profile.md`: apply to the jobs it allows, without asking.
 - Otherwise show the top matches (up to 5, score 4 or more first) and ask one question: "Apply to these?"
+
+## Morning run (when started by the schedule)
+
+If this run was started by the morning schedule, nobody is there to answer. Never ask a question and never wait. Skip steps 1, 2, 2a and 2b. Do steps 3 and 4 within every rule and daily limit; anything that needs the user becomes a "Needs you" note. Then write the short report; the user sees it later.
 
 ## 5. Report
 

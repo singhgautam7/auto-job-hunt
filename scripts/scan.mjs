@@ -60,10 +60,38 @@ const FETCHERS = {
   },
 };
 
-async function getJson(url) {
-  const res = await fetch(url, { headers: { 'user-agent': 'auto-job-hunt/1.0' }, signal: AbortSignal.timeout(20000) });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
+// Fetches JSON with up to 2 retries for network errors, rate limits (429) and server errors (5xx).
+// A 404 is not retried: the board or posting no longer exists.
+export async function getJson(url, { tries = 3, wait = 1000 } = {}) {
+  for (let attempt = 1; ; attempt++) {
+    let res;
+    try {
+      res = await fetch(url, { headers: { 'user-agent': 'auto-job-hunt/1.0' }, signal: AbortSignal.timeout(20000) });
+    } catch (e) {
+      if (attempt >= tries) throw new Error(e.name === 'TimeoutError' ? 'timed out' : 'no internet or site down');
+      await new Promise(r => setTimeout(r, wait * attempt * attempt));
+      continue;
+    }
+    if (res.status === 404) throw Object.assign(new Error('not found (moved or closed)'), { status: 404 });
+    if ((res.status === 429 || res.status >= 500) && attempt < tries) {
+      await new Promise(r => setTimeout(r, wait * attempt * attempt));
+      continue;
+    }
+    if (!res.ok) throw Object.assign(new Error(`site answered ${res.status}`), { status: res.status });
+    try { return await res.json(); } catch { throw new Error('site sent something that is not a job list'); }
+  }
+}
+
+// Reads a JSON file or stops with a plain message saying which file is broken.
+function readJsonFile(file, what) {
+  let text;
+  try { text = fs.readFileSync(file, 'utf8'); } catch { fail(`${what} not found: ${file}`); }
+  try { return JSON.parse(text); } catch (e) { fail(`${what} is damaged (${e.message}): ${file}`); }
+}
+
+function fail(message) {
+  console.log(JSON.stringify({ error: message }));
+  process.exit(1);
 }
 
 // Every word of a role must appear as a whole word (plural allowed), so "engineer" does not match "engineering".
@@ -113,18 +141,24 @@ async function main(args) {
   const opt = k => { const i = args.indexOf(`--${k}`); return i >= 0 ? args[i + 1] : undefined; };
   // --check <ats> <slug>: test one company's board before adding it to companies.json
   if (opt('check')) {
+    if (!FETCHERS[opt('check')]) fail(`Unknown job board "${opt('check')}". Use greenhouse, lever, ashby or smartrecruiters.`);
     const jobs = await FETCHERS[opt('check')](args[args.indexOf('--check') + 2]);
     const india = jobs.filter(j => /india|bengaluru|bangalore|mumbai|pune|delhi|gurgaon|gurugram|noida|hyderabad|chennai/i.test(j.location));
     return console.log(JSON.stringify({ jobs: jobs.length, india: india.length, sample: india.slice(0, 5).map(j => j.role) }));
   }
   const jobsFile = opt('jobs');
-  if (jobsFile && opt('add')) return addJobs(jobsFile, JSON.parse(fs.readFileSync(opt('add'), 'utf8')));
+  if (jobsFile && opt('add')) {
+    const list = readJsonFile(opt('add'), 'The list of jobs to add');
+    if (!Array.isArray(list)) fail('The list of jobs to add must be a JSON array.');
+    return addJobs(jobsFile, list);
+  }
   const roles = (opt('roles') || '').split(',').map(s => s.trim()).filter(Boolean);
-  if (!jobsFile || !roles.length) { console.error('Need --jobs <file> and --roles "a,b" (or --add <jobs.json>)'); process.exit(2); }
+  if (!jobsFile || !roles.length) fail('Need --jobs <file> and --roles "a,b" (or --add <jobs.json>)');
   const cities = (opt('cities') || '').split(',').map(s => s.trim()).filter(Boolean);
   const remote = args.includes('--remote');
   const maxAge = Date.now() - Number(opt('days') || 45) * 864e5;
-  let companies = JSON.parse(fs.readFileSync(opt('companies') || path.join(HERE, '..', 'companies.json'), 'utf8'));
+  let companies = readJsonFile(opt('companies') || path.join(HERE, '..', 'companies.json'), 'The company list');
+  if (!Array.isArray(companies)) fail('The company list must be a JSON array.');
 
   const { links, maxId } = readJobs(jobsFile);
   const found = [], failed = [];
@@ -150,17 +184,26 @@ async function main(args) {
   }
 
   const added = appendRows(jobsFile, found, maxId);
-  console.log(JSON.stringify({ companies: companies.length, postings: scanned, new_jobs: added, failed, search_on_naukri_and_linkedin: jobsiteOnly }, null, 1));
+  const allFailed = failed.length === companies.length && companies.length > 0;
+  console.log(JSON.stringify({ companies: companies.length, postings: scanned, new_jobs: added, failed,
+    ...(allFailed ? { error: failed.every(f => f.includes('not found')) ? 'None of these company job boards exist any more. The company list needs updating.'
+      : 'Every company failed. Check the internet connection and try again.' } : {}),
+    search_on_naukri_and_linkedin: jobsiteOnly }, null, 1));
 }
 
 function appendRows(jobsFile, jobs, maxId) {
-  if (!fs.existsSync(jobsFile)) {
-    fs.writeFileSync(jobsFile, `# Jobs\n\n| ${HEADER.join(' | ')} |\n|${HEADER.map(() => '---').join('|')}|\n`);
+  try {
+    if (!fs.existsSync(jobsFile)) {
+      fs.writeFileSync(jobsFile, `# Jobs\n\n| ${HEADER.join(' | ')} |\n|${HEADER.map(() => '---').join('|')}|\n`);
+    }
+    const foundAt = stamp();
+    const rows = jobs.map((j, k) => toRow(maxId + k + 1, j, foundAt));
+    const text = fs.readFileSync(jobsFile, 'utf8');
+    if (rows.length) fs.appendFileSync(jobsFile, (text.endsWith('\n') ? '' : '\n') + rows.join('\n') + '\n');
+    return rows.length;
+  } catch (e) {
+    fail(`Could not save to ${jobsFile} (${e.code || e.message}). Close any app that has it open and try again.`);
   }
-  const foundAt = stamp();
-  const rows = jobs.map((j, k) => toRow(maxId + k + 1, j, foundAt));
-  if (rows.length) fs.appendFileSync(jobsFile, rows.join('\n') + '\n');
-  return rows.length;
 }
 
 // Jobs found by hand (Naukri, LinkedIn): [{company, role, location, mode, posted, link, pay, source}]
@@ -177,8 +220,11 @@ function addJobs(jobsFile, jobs) {
   console.log(JSON.stringify({ new_jobs: appendRows(jobsFile, fresh, maxId), duplicates: jobs.length - fresh.length }));
 }
 
-function selfTest() {
+async function selfTest() {
   const assert = (c, m) => { if (!c) throw new Error(`self-test failed: ${m}`); };
+  let msg = '';
+  try { await getJson('http://127.0.0.1:9/none', { tries: 2, wait: 1 }); } catch (e) { msg = e.message; }
+  assert(msg === 'no internet or site down', 'network error becomes a plain message');
   assert(roleMatches('Senior Account Executive, India', ['account executive']), 'role words');
   assert(!roleMatches('Software Engineer', ['sales manager']), 'role miss');
   assert(roleMatches('Regional Sales Manager - West', ['sales manager']), 'role multiword');
@@ -192,6 +238,9 @@ function selfTest() {
   fs.writeFileSync(tmp, `| ${HEADER.join(' | ')} |\n|---|\n${toRow(7, { company: 'A|B', role: 'R', link: 'https://x/1' }, '2026-01-01 10:00')}\n`);
   const r = readJobs(tmp);
   assert(r.maxId === 7 && r.links.has('https://x/1'), 'read back id and link');
+  fs.writeFileSync(tmp, fs.readFileSync(tmp, 'utf8').trimEnd());
+  appendRows(tmp, [{ company: 'C', role: 'R2', link: 'https://x/2' }], 7);
+  assert(readJobs(tmp).maxId === 8 && !fs.readFileSync(tmp, 'utf8').includes('||'), 'append works when the file has no final newline');
   assert(toRow(1, { posted: '2026-11-01' }, 'x').includes('| 2026-11-01 |'), 'date-only stays a date');
   assert(jobKey('Titan Company Ltd.', 'Area Sales Manager') === jobKey('Titan', 'Area Sales Manager (Retail)'), 'same job across sites');
   assert(jobKey('Okta', 'Senior Software Engineer') !== jobKey('Okta', 'Staff Software Engineer'), 'different roles differ');
@@ -200,6 +249,6 @@ function selfTest() {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  if (process.argv.includes('--self-test')) selfTest();
-  else await main(process.argv.slice(2));
+  if (process.argv.includes('--self-test')) await selfTest();
+  else await main(process.argv.slice(2)).catch(e => fail(e.message));
 }

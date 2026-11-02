@@ -28,24 +28,34 @@ export function findChrome() {
 export const countPages = buf => (buf.toString('latin1').match(/\/Type\s*\/Page(?![s\w])/g) || []).length;
 
 export function makePdf(input, output = input.replace(/\.html?$/i, '.pdf')) {
+  if (!fs.existsSync(input)) throw new Error(`The page to print was not found: ${input}`);
   const chrome = findChrome();
-  if (!chrome) throw new Error('Google Chrome was not found. Install Chrome, then try again.');
+  if (!chrome) throw new Error('Google Chrome was not found. Install Chrome from google.com/chrome, then try again.');
   const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'ajh-pdf-'));
   try {
+    fs.rmSync(output, { force: true });
     execFileSync(chrome, ['--headless=new', '--disable-gpu', '--no-pdf-header-footer', `--user-data-dir=${profile}`,
       `--print-to-pdf=${path.resolve(output)}`, pathToFileURL(path.resolve(input)).href], { stdio: 'ignore', timeout: 60000 });
+  } catch (e) {
+    throw new Error(e.code === 'ETIMEDOUT' ? 'Chrome took too long to make the PDF. Close other Chrome windows and try again.' : `Chrome could not make the PDF (${e.message.split('\n')[0]}).`);
   } finally { fs.rmSync(profile, { recursive: true, force: true }); }
-  return { pdf: path.resolve(output), pages: countPages(fs.readFileSync(output)) };
+  const buf = fs.existsSync(output) ? fs.readFileSync(output) : Buffer.alloc(0);
+  const pages = countPages(buf);
+  if (!pages) throw new Error('The PDF came out empty. Check the page opens in a browser, then try again.');
+  return { pdf: path.resolve(output), pages };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (process.argv.includes('--self-test')) {
     const assert = (c, m) => { if (!c) throw new Error(`self-test failed: ${m}`); };
     assert(countPages(Buffer.from('<< /Type /Pages /Count 2 >> << /Type /Page >> << /Type/Page /Parent 1 >>')) === 2, 'page count');
+    let msg = ''; try { makePdf('/nonexistent/x.html'); } catch (e) { msg = e.message; }
+    assert(msg.startsWith('The page to print was not found'), 'missing input gives a plain message');
     console.log('self-test ok');
   } else {
     const [input, output] = process.argv.slice(2);
     if (!input) { console.error('Usage: node make-pdf.mjs <in.html> [out.pdf]'); process.exit(2); }
-    console.log(JSON.stringify(makePdf(input, output)));
+    try { console.log(JSON.stringify(makePdf(input, output))); }
+    catch (e) { console.log(JSON.stringify({ error: e.message })); process.exit(1); }
   }
 }

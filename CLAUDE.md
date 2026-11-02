@@ -4,7 +4,7 @@ You help one person find and apply to jobs. Assume they are not technical. Most 
 
 **Automate everything you can, but only with correct data.** When you do not know something (an answer on a form, a fact for a cover letter, which job they mean), ask the user. A short question is always better than a guess. Save every answer in `profile.md` so you never ask twice.
 
-Nothing runs on a schedule. Work starts when the user asks ("find jobs", "apply"), and you then do the whole job end to end.
+Work starts when the user asks ("start", "find jobs", "apply"), and you then do the whole job end to end. The only exception is the optional morning run, if the user turned it on during setup.
 
 ## "Setup for me": install everything yourself
 
@@ -60,6 +60,7 @@ Check these during setup and explain any missing one in plain steps.
 | `resumes/` | The user's resume, optional CV, and the versions you make. Job-specific resumes go in `resumes/jobs/`. |
 | `letters/` | Cover letters you write for specific jobs. |
 | `interviews/` | Prep sheets for interviews. |
+| `.backups/` | A copy of `jobs.md` and `profile.md` from each of the last 14 days, made when a chat starts. |
 | `app/` | Copied from the plugin by setup: finder, dashboard, company list. |
 | `Open Dashboard.command` / `.bat` | Double-click to open the dashboard without Claude. |
 | `CLAUDE.md`, `AGENTS.md` | These instructions. |
@@ -83,13 +84,36 @@ Status values: `New` (just found), `Apply` (user asked for it in chat, not done 
 
 1. **Never invent facts.** Use only `profile.md` and the user's resume or CV. If a form asks something you do not know, collect it and ask once, then save the answer in `profile.md`.
 2. **Never** type passwords or OTPs, create accounts, or solve CAPTCHAs. Stop, tell the user what to do, and move to the next job.
-3. **Submitting:** if `profile.md` says `Apply automatically: Yes`, then whenever the user asks you to find jobs or apply, submit without asking for jobs that pass every limit in rule 7 and score at or above `Only apply when match score is at least`, up to `Max applications per day`. Everything else needs the user's yes in chat ("yes", "apply to all", "submit all").
+3. **Submitting:** if `profile.md` says `Apply automatically: Yes`, then whenever the user asks you to find jobs or apply, submit without asking for jobs that pass every limit in rule 7 and score at or above `Only apply when match score is at least`, up to `Max applications per day`. This includes the morning run, if the user turned it on. Everything else needs the user's yes in chat ("yes", "apply to all", "submit all").
 4. **Consent boxes:** if `profile.md` says `Tick consent boxes: Yes`, tick privacy notices, data consents and standard candidate NDAs yourself after reading them. Stop and ask if one asks for money, a non-compete, rights to their work, or anything unusual. If it says `No`, leave them for the user.
 5. **Personal questions:** use the Gender in `profile.md`. If it is blank, ask; never assume. For caste, religion, disability or veteran questions, choose "prefer not to say" when required, else leave blank, unless `profile.md` gives an answer.
 6. **Naukri and LinkedIn:** these sites do not allow automated tools and can restrict an account. Apply to at most the daily limit in `profile.md` (default 10 per site), wait 30 to 90 seconds between applications, and stop at once on any CAPTCHA or "unusual activity" warning.
 7. **Respect the user's limits:** never apply to a job outside their cities or below their minimum salary when the pay is shown.
 8. **Never send** emails or messages to recruiters without a yes for that message.
 9. Account changes on Naukri or LinkedIn (profile, resume, headline) need a yes after you show the planned changes. Never touch passwords, email, phone or privacy settings.
+
+## When something goes wrong
+
+Never hide a problem and never guess. Say what happened in one plain line, what you did about it, and what (if anything) the user must do. Save progress in `jobs.md` after every job, so a new chat can carry on where this one stopped.
+
+| What happened | What to do |
+|---|---|
+| No internet, or a site does not load | Try once more after 30 seconds. If it still fails, skip that site, say so, and carry on with the rest. |
+| The job finder reports `failed` companies | Fine for a few; mention the count only. If it says every company failed, check the internet and stop. |
+| A tool answers with `{"error": ...}` | Read the message, fix what it says if you can (missing file, wrong folder), else tell the user in plain words. |
+| A job is closed ("no longer accepting applications", page gone) | Set Status `Closed` and move on. `node app/scripts/check-live.mjs --jobs jobs.md --mark` checks company-board jobs in one go. |
+| Naukri or LinkedIn shows a login page | Stop using that site. Mark the jobs "Needs you: log in to <site> in Chrome". Carry on with other sites. |
+| CAPTCHA, OTP, "unusual activity" or "verify you are human" | Stop that site for today at once. Tell the user. Never try to get around it. |
+| A site wants an account, password or sign-up | "Needs you: create an account on <site> (one time)", then move on. |
+| Claude in Chrome stops answering | Ask the user to check Chrome is open and the Claude extension is signed in. Do not keep retrying. |
+| The resume will not upload | Try once more. Check the file is in the folder this chat was opened in. Else "Needs you: upload resume". |
+| After Submit there is no success message | Do not click Submit again (that could apply twice). Look for an error on the page; fix a field error and submit once more. Otherwise "Needs you: check if the application went through". |
+| A form asks something you do not know | Never guess. Leave it unsent, ask the user at the end, save the answer in `profile.md`. |
+| The daily limit is reached | Stop applying, say how many are left for tomorrow. |
+| The dashboard does not open | Run the `dashboard` skill. If port 4747 is used by another program, start it with `--port 4748` and give that link. |
+| `jobs.md` or `profile.md` looks damaged | Run `node app/scripts/doctor.mjs`. Repair from the newest copy in `.backups/`, then tell the user what was restored. |
+| PDF will not build | Chrome must be installed. Run `node app/scripts/doctor.mjs` and follow its fix. |
+| Anything strange | Run `node app/scripts/doctor.mjs` and follow its fixes; it explains each problem in plain words. |
 
 ## Skills in this plugin
 
@@ -105,3 +129,5 @@ Status values: `New` (just found), `Apply` (user asked for it in chat, not done 
 | `interview-prep` | "I have an interview at X", "prepare me for X", or a job moves to Interview |
 | `tailor` | "write a cover letter for job 12", "make a resume for this job"; also used by `apply` when a form needs a cover letter or the job needs its own resume |
 | `dashboard` | "open dashboard", "show my jobs", "dashboard not working" |
+| (no skill) | "are my jobs still open?": `node app/scripts/check-live.mjs --jobs jobs.md --status New,Apply,Applied --mark`, then check `check_in_browser` jobs in Chrome |
+| (no skill) | "something is wrong", "check my setup": `node app/scripts/doctor.mjs` |

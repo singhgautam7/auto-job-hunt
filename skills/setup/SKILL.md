@@ -44,6 +44,7 @@ If they say yes to either, run the `resume` skill's "Review and improve" step ri
 15. "Some jobs ask for a cover letter. Should I write one only when the form needs it, or for every application?" (Only when needed / Every application)
 16. "Some forms have privacy and consent boxes. Should I tick them for you after reading them?" (Yes / No, I will tick them). If they chose automatic applying and say No here, tell them forms with consent boxes will wait for them.
 17. "Naukri and LinkedIn do not allow automatic tools, and may restrict accounts that apply too fast. I will apply slowly, at most 10 jobs a day on each. Is 10 OK?" (10 / 5 / 20)
+18. "Do you want me to run every morning by myself? I would look for new jobs and, if you said yes to automatic applying, apply to the good ones. It only works while this computer is on and the Claude app is open." (No, I will say start myself / Yes, every morning at 9). If yes: create a daily 9 AM scheduled task with the app's scheduled tasks tool, in the workspace folder, with the prompt "Run the auto-job-hunt hunt skill. This is the morning run." Save `Morning run: Yes at 9:00` in `profile.md`. If the app has no scheduled tasks tool, say so and save `No`.
 
 ## 3. Suggest more job titles
 

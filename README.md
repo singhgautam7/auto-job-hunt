@@ -9,7 +9,9 @@ A Claude plugin that runs your job search for you. No tech skills needed.
 - Scores each job against what you want and skips the ones that do not fit.
 - Writes a cover letter and a job-specific resume when a job needs one, using only facts from your resume.
 - Applies for you, slowly and safely, after you say yes (or right away, if you turn that on).
-- Shows everything on a dashboard in your browser: every job, when it was posted, when it was found, its status and your notes.
+- Shows everything on a dashboard in your browser: every job, when it was posted, when it was found, its status and your notes. Download it for Excel any time.
+- Checks jobs are still open before applying, reminds you to follow up after 10 days, and helps you prepare for interviews.
+- Keeps a daily backup of your job list, and a health check finds and explains problems in plain words.
 
 ## Install (one time, about 10 minutes)
 
@@ -66,6 +68,7 @@ It starts by itself when you open a chat with Claude. Click `http://localhost:47
 - **Dashboard does not open:** start a chat with Claude in your Auto Job Hunt folder (it starts the dashboard), or double-click **Open Dashboard** in that folder.
 - **Naukri or LinkedIn not working:** open Chrome, click the Claude icon in the toolbar and check you are signed in; check you are logged in to Naukri and LinkedIn.
 - **"Needs you" on a job:** a site wanted a login, an account, a CAPTCHA or an answer only you know. Say "start" and Claude asks you what it needs.
+- **Not sure what is wrong:** say "check my setup". Claude runs a health check and tells you what to fix.
 - **Anything else:** tell Claude what you see, in your own words.
 
 ## Remove it

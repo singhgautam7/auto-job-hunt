@@ -238,6 +238,7 @@
   <symbol id="i-light" viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zM2 13h2a1 1 0 0 0 0-2H2a1 1 0 0 0 0 2zm18 0h2a1 1 0 0 0 0-2h-2a1 1 0 0 0 0 2zM11 2v2a1 1 0 0 0 2 0V2a1 1 0 0 0-2 0zm0 18v2a1 1 0 0 0 2 0v-2a1 1 0 0 0-2 0zM5.99 4.58a1 1 0 0 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41L5.99 4.58zm12.37 12.37a1 1 0 0 0-1.41 1.41l1.06 1.06a1 1 0 0 0 1.41-1.41l-1.06-1.06zm1.06-10.96a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06zM7.05 18.36a1 1 0 0 0-1.41-1.41l-1.06 1.06a1 1 0 0 0 1.41 1.41l1.06-1.06z"/></symbol>
   <symbol id="i-warn" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></symbol>
   <symbol id="i-quote" viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></symbol>
   <symbol id="i-info" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></symbol>
 </svg>
 
@@ -271,7 +272,7 @@
     </div>
     <div class="grid two" style="margin-bottom:16px">
       <div class="card"><h2>Best new matches</h2><p class="sub">Highest match scores you have not applied to yet</p><div class="list" id="best"></div></div>
-      <div class="card"><h2>Needs you</h2><p class="sub">Things Claude could not finish without you</p><div class="list" id="needs"></div></div>
+      <div class="card"><h2>Needs you</h2><p class="sub">Things only you can do, and follow-ups that are due</p><div class="list" id="needs"></div></div>
     </div>
     <div class="grid two">
       <div class="card"><h2>Match scores</h2><p class="sub">How well jobs fit you, out of 5</p><div class="chart" id="ch-scores"></div></div>
@@ -285,6 +286,7 @@
       <select class="select" id="f-source" aria-label="Where the job came from"><option value="">All sources</option></select>
       <select class="select" id="f-age" aria-label="When it was posted"><option value="">Posted any time</option><option value="1">Posted today</option><option value="7">Last 7 days</option><option value="30">Last 30 days</option></select>
       <select class="select" id="f-score" aria-label="Lowest match score"><option value="">Any match</option><option value="4">Match 4+</option><option value="3">Match 3+</option></select>
+      <button class="btn btn-tonal sl" id="download" style="height:48px"><svg class="ic"><use href="#i-download"/></svg>Download for Excel</button>
     </div>
     <div class="chips" id="f-status" style="margin-bottom:14px" role="group" aria-label="Filter by status"></div>
     <div class="table-card">
@@ -457,13 +459,18 @@ function renderOverview() {
 
   const best = jobs.filter(j => !isApplied(j) && j.Status !== 'Skip' && num(j.Score) !== null).sort((a, b) => num(b.Score) - num(a.Score)).slice(0, 5);
   $('best').innerHTML = best.length ? best.map(j => listItem(j)).join('') : '<div class="empty">No open matches right now</div>';
-  const needs = jobs.filter(j => /needs you/i.test(j.Notes));
-  $('needs').innerHTML = needs.length ? needs.map(j => listItem(j, true)).join('') : '<div class="empty">All clear. Nothing needs you.</div>';
+  const needs = jobs.filter(j => /needs you/i.test(j.Notes)).map(j => listItem(j, j.Notes));
+  const follow = followUps().map(j => listItem(j, `Follow up: applied ${daysSince(j.Applied)} days ago. Ask Claude to draft a message.`));
+  $('needs').innerHTML = [...needs, ...follow].join('') || '<div class="empty">All clear. Nothing needs you.</div>';
 }
+// warn: a message to show instead of the location, with a warning icon instead of the score.
 function listItem(j, warn) {
   return `<button class="li sl" data-id="${esc(j.ID)}">${warn ? '<svg class="ic" style="color:var(--st-amber-fg)"><use href="#i-warn"/></svg>' : scoreBadge(j.Score)}
-    <span class="main"><div class="t">${esc(j.Role)}</div><div class="m">${esc(j.Company)} · ${esc(warn ? j.Notes : j.Location)}</div></span>${statusPill(j.Status)}</button>`;
+    <span class="main"><div class="t">${esc(j.Role)}</div><div class="m">${esc(j.Company)} · ${esc(warn || j.Location)}</div></span>${statusPill(j.Status)}</button>`;
 }
+const daysSince = s => { const d = toDate(s); return d ? Math.floor((Date.now() - d) / DAY) : 0; };
+// Applied 10 or more days ago, no reply recorded, not followed up yet.
+const followUps = () => jobs.filter(j => j.Status === 'Applied' && daysSince(j.Applied) >= 10 && !/followed up/i.test(j.Notes));
 
 const COLS = [
   ['Role', 'Job'], ['Location', 'Location', 'hide-md'], ['Posted', 'Posted'], ['Found', 'Found', 'hide-md'],
@@ -475,9 +482,13 @@ function renderJobs() {
     .map(([v, l, n]) => `<button class="chip sl" data-s="${v}" aria-pressed="${v === filterStatus}">${l} <span class="n">${n}</span></button>`).join('');
   $('jobs-head').innerHTML = COLS.map(([k, l, c]) => `<th class="${c || ''}" ${k ? `data-k="${k}"` : ''}${k === sortKey ? ` aria-sort="${sortDir > 0 ? 'ascending' : 'descending'}"` : ''}>${l}${k === sortKey ? (sortDir > 0 ? ' ↑' : ' ↓') : ''}</th>`).join('');
 
+  const list = visibleJobs();
+  renderRows(list);
+}
+function visibleJobs() {
   const q = $('q').value.trim().toLowerCase(), src = $('f-source').value, age = +$('f-age').value, min = +$('f-score').value;
   const since = age ? Date.now() - age * DAY : 0;
-  const list = jobs.filter(j =>
+  return jobs.filter(j =>
     (!filterStatus || j.Status === filterStatus) && (!src || sourceName(j.Source) === src) && (!min || num(j.Score) >= min) &&
     (!since || toDate(j.Posted)?.getTime() >= since) &&
     (!q || [j.Company, j.Role, j.Location, j.Notes, j.Verdict].join(' ').toLowerCase().includes(q))
@@ -486,6 +497,8 @@ function renderJobs() {
     const dx = ['Posted', 'Found', 'Applied'].includes(sortKey) ? toDate(x)?.getTime() ?? 0 : num(x), dy = ['Posted', 'Found', 'Applied'].includes(sortKey) ? toDate(y)?.getTime() ?? 0 : num(y);
     return (dx !== null && dy !== null ? dx - dy : String(x).localeCompare(String(y))) * sortDir;
   });
+}
+function renderRows(list) {
   $('jobs-rows').innerHTML = list.length ? list.map(j => `<tr data-id="${esc(j.ID)}">
     <td><div class="t">${esc(j.Role)}</div><div class="m">${esc(j.Company)}</div></td>
     <td class="hide-md"><div>${esc(j.Location)}</div><div class="m">${esc(j.Mode)}</div></td>
@@ -592,6 +605,17 @@ document.addEventListener('click', e => {
   if (th) { sortDir = sortKey === th.dataset.k ? -sortDir : -1; sortKey = th.dataset.k; renderJobs(); }
 });
 ['q', 'f-source', 'f-age', 'f-score'].forEach(id => $(id).addEventListener('input', renderJobs));
+// Downloads the jobs shown (after filters) as a CSV file that Excel and Google Sheets open.
+$('download').addEventListener('click', () => {
+  const list = visibleJobs();
+  if (!list.length) return snack('No jobs to download with these filters.');
+  const cols = ['ID', 'Company', 'Role', 'Location', 'Mode', 'Source', 'Posted', 'Found', 'Pay', 'Score', 'Verdict', 'Status', 'Applied', 'Resume', 'Link', 'Notes'];
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const csv = '\ufeff' + [cols.map(q).join(','), ...list.map(j => cols.map(c => q(c === 'Source' ? sourceName(j[c]) : j[c])).join(','))].join('\r\n');
+  const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })), download: `jobs-${new Date().toLocaleDateString('sv-SE')}.csv` });
+  document.body.append(a); a.click(); a.remove();
+  snack(`Downloaded ${list.length} jobs`);
+});
 $('theme').addEventListener('click', () => {
   const mode = document.documentElement.dataset.mode === 'dark' ? 'light' : 'dark';
   document.documentElement.dataset.mode = mode;

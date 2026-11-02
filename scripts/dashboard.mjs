@@ -61,6 +61,21 @@ export function parseProfile(text) {
 
 function readText(file) { try { return fs.readFileSync(file, 'utf8'); } catch { return ''; } }
 
+// Writes via a temp file and rename, so a crash or full disk never leaves a half-written jobs.md.
+export function writeAtomic(file, text) {
+  const tmp = `${file}.${process.pid}.tmp`;
+  fs.writeFileSync(tmp, text);
+  fs.renameSync(tmp, file);
+}
+
+// Edits one job safely: re-reads the file right before writing so nothing added meanwhile is lost.
+// ponytail: no file lock; a scan appending in the same millisecond could still race, add a lock if that ever shows up
+export function editJobFile(file, id, changes) {
+  let text = fs.readFileSync(file, 'utf8');
+  for (const [field, value] of Object.entries(changes)) text = updateJob(text, id, field, value);
+  writeAtomic(file, text);
+}
+
 function send(res, code, body, type = 'application/json') {
   res.writeHead(code, { 'content-type': type, 'cache-control': 'no-store' });
   res.end(typeof body === 'string' ? body : JSON.stringify(body));
@@ -68,6 +83,18 @@ function send(res, code, body, type = 'application/json') {
 
 function serve() {
   http.createServer((req, res) => {
+    try { route(req, res); } catch (e) { send(res, 500, { error: e.message }); }
+  }).listen(PORT, '127.0.0.1', () => console.log(`Dashboard: http://localhost:${PORT}  (folder: ${DIR})`))
+    .on('error', async e => {
+      if (e.code !== 'EADDRINUSE') { console.log(`Dashboard could not start: ${e.message}`); process.exit(1); }
+      const ours = await fetch(`http://localhost:${PORT}/api/jobs`, { signal: AbortSignal.timeout(1500) }).then(r => r.ok, () => false);
+      console.log(ours ? `Dashboard already running: http://localhost:${PORT}`
+        : `Port ${PORT} is used by another program. Close it, or start the dashboard with --port ${PORT + 1}.`);
+      process.exit(ours ? 0 : 1);
+    });
+}
+
+function route(req, res) {
     const url = new URL(req.url, 'http://localhost').pathname;
     if (req.method === 'GET' && url === '/') return send(res, 200, readText(PAGE), 'text/html; charset=utf-8');
     if (req.method === 'GET' && url === '/api/jobs') {
@@ -84,18 +111,16 @@ function serve() {
         try {
           const { field, value } = JSON.parse(body);
           if (!EDITABLE[field] || typeof value !== 'string' || !EDITABLE[field](value)) return send(res, 400, { error: 'bad field' });
-          fs.writeFileSync(JOBS, updateJob(readText(JOBS), m[1], field, value));
+          editJobFile(JOBS, m[1], { [field]: value });
           send(res, 200, { ok: true });
-        } catch (e) { send(res, 400, { error: e.message }); }
+        } catch (e) {
+          const why = { ENOENT: 'jobs.md is missing', EACCES: 'jobs.md is locked', EPERM: 'jobs.md is locked', ENOSPC: 'the disk is full' }[e.code];
+          send(res, e.code ? 500 : 400, { error: e.code ? `Could not save: ${why || e.code}` : e.message });
+        }
       });
       return;
     }
     send(res, 404, { error: 'not found' });
-  }).listen(PORT, '127.0.0.1', () => console.log(`Dashboard: http://localhost:${PORT}  (folder: ${DIR})`))
-    .on('error', e => {
-      if (e.code === 'EADDRINUSE') console.log(`Dashboard already running: http://localhost:${PORT}`);
-      else throw e;
-    });
 }
 
 function selfTest() {
@@ -110,6 +135,11 @@ function selfTest() {
   assert(prof.length === 2 && prof[0].items[0][1] === '60 days' && prof[1].items[0][0] === 'a.pdf', 'profile parse');
   let threw = false; try { updateJob(md, 9, 'Notes', 'x'); } catch { threw = true; }
   assert(threw, 'missing id throws');
+  const tmp = path.join(fs.mkdtempSync(path.join(process.env.TMPDIR || '/tmp', 'ajh-')), 'jobs.md');
+  fs.writeFileSync(tmp, md);
+  editJobFile(tmp, 1, { Status: 'Closed', Notes: 'gone' });
+  const back = parseJobs(fs.readFileSync(tmp, 'utf8'))[0];
+  assert(back.Status === 'Closed' && back.Notes === 'gone' && !fs.readdirSync(path.dirname(tmp)).some(f => f.endsWith('.tmp')), 'safe edit leaves no temp file');
   console.log('self-test ok');
 }
 

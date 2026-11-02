@@ -41,11 +41,23 @@ export function syncApp(ws, plugin = PLUGIN) {
   return { from: have || 'none', to: want };
 }
 
+// Keeps one copy of jobs.md and profile.md per day in <ws>/.backups, for the last 14 days.
+export function backup(ws, keep = 14, today = new Date().toLocaleDateString('sv-SE')) {
+  const root = path.join(ws, '.backups'), dir = path.join(root, today);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+    for (const f of ['jobs.md', 'profile.md']) if (fs.existsSync(path.join(ws, f))) fs.copyFileSync(path.join(ws, f), path.join(dir, f));
+  }
+  const days = fs.readdirSync(root).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d)).sort();
+  for (const d of days.slice(0, Math.max(0, days.length - keep))) fs.rmSync(path.join(root, d), { recursive: true, force: true });
+}
+
 async function main() {
   const ws = [process.cwd(), path.join(os.homedir(), 'Documents', 'Auto Job Hunt')].find(isWorkspace);
   if (!ws) return;
   let synced = null;
   try { synced = syncApp(ws); } catch (e) { console.log(`Auto Job Hunt: could not update the app files (${e.message}).`); }
+  try { backup(ws); } catch (e) { console.log(`Auto Job Hunt: daily backup failed (${e.message}).`); }
 
   const up = () => fetch(`${URL}/api/jobs`, { signal: AbortSignal.timeout(800) }).then(r => r.ok, () => false);
   if (!(await up())) {
@@ -71,6 +83,10 @@ function selfTest() {
   const mine = readJson(path.join(ws, 'companies.json'));
   assert(mine[0].name === 'Mine' && mine.length > 1, 'own companies kept and new ones added');
   assert(syncApp(ws) === null, 'no second sync at same version');
+  fs.writeFileSync(path.join(ws, 'jobs.md'), 'x');
+  for (const d of ['2026-01-01', '2026-01-02', '2026-01-03']) backup(ws, 2, d);
+  const kept = fs.readdirSync(path.join(ws, '.backups')).sort();
+  assert(kept.join() === '2026-01-02,2026-01-03' && fs.existsSync(path.join(ws, '.backups', '2026-01-03', 'jobs.md')), 'backups kept for N days');
   fs.rmSync(tmp, { recursive: true, force: true });
   console.log('self-test ok');
 }

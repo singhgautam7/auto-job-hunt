@@ -18,6 +18,8 @@ Drop any job that breaks the user's limits (city, minimum pay, companies to avoi
 Never apply twice: skip a job if `jobs.md` already has the same company and role as `Applied` (it may have come from another site).
 Daily limits: count rows with Applied = today. Stop at `Max applications per day`, and at the per-site limit for Naukri and LinkedIn.
 
+Before applying, check the list is still open: `node app/scripts/check-live.mjs --jobs jobs.md --ids <ids> --mark`. Drop the ones it marks closed. Jobs it lists under `check_in_browser` are checked when you open them.
+
 ## 2. Yes or automatic
 
 - `Apply automatically: Yes` and every job on the list passes the limits: go ahead, no question.
@@ -56,6 +58,8 @@ Use Claude in Chrome (the user's own Chrome, where they are logged in). Open the
 - Questions not answered in `profile.md` (for example "Can you work in the office 5 days a week?" or "Do you know anyone here?"): ask the user, then save the answer.
 - Untick "Follow company" if it is shown. After submitting, close LinkedIn's "update your profile" offer with "Not now".
 - Success means LinkedIn shows "Your application was sent" or "Application submitted".
+
+**When something goes wrong:** follow the table in `CLAUDE.md`. The two that matter most here: never click Submit twice without a visible error, and never guess a form answer.
 
 **Every site**
 - Before submitting, check that all required fields are filled and the right resume is attached.
