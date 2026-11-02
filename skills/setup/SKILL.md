@@ -26,16 +26,18 @@ Ask in small groups. Use clickable options when the app offers them (AskUserQues
 6. Current fixed salary per year, and variable or bonus.
 7. Expected total salary, and the **minimum fixed salary** you will accept.
 8. Notice period (Immediate, 15 days, 30 days, 60 days, 90 days).
+9. Home address (city and state is enough; many forms require it).
+10. Gender, for forms that ask (Male / Female / Other / Prefer not to say). Never assume it.
 
 **Optional, ask in one go**
-9. A CV or longer profile, if different from the resume.
-10. Industries you like, and companies to avoid (suggest their current company).
-11. LinkedIn link. Do you have a Naukri account?
+11. A CV or longer profile, if different from the resume.
+12. Industries you like, and companies to avoid (suggest their current company).
+13. LinkedIn link. Do you have a Naukri account?
 
 **Rules, explain then ask**
-12. "Should I apply for you automatically every morning? I will only apply to jobs that match you well (score 4 out of 5 or more), are in your cities and meet your minimum salary when it is shown. You can see every application on your dashboard." (Yes, apply automatically / No, ask me first). If yes: "How many applications a day at most?" (10 / 20 / 30)
-13. "Some forms have privacy and consent boxes. Should I tick them for you after reading them?" (Yes / No, I will tick them). If they chose automatic applying and say No here, tell them forms with consent boxes will wait for them.
-14. "Naukri and LinkedIn do not allow automatic tools, and may restrict accounts that apply too fast. I will apply slowly, at most 10 jobs a day on each. Is 10 OK?" (10 / 5 / 20)
+14. "Should I apply for you automatically every morning? I will only apply to jobs that match you well (score 4 out of 5 or more), are in your cities and meet your minimum salary when it is shown. You can see every application on your dashboard." (Yes, apply automatically / No, ask me first). If yes: "How many applications a day at most?" (10 / 20 / 30)
+15. "Some forms have privacy and consent boxes. Should I tick them for you after reading them?" (Yes / No, I will tick them). If they chose automatic applying and say No here, tell them forms with consent boxes will wait for them.
+16. "Naukri and LinkedIn do not allow automatic tools, and may restrict accounts that apply too fast. I will apply slowly, at most 10 jobs a day on each. Is 10 OK?" (10 / 5 / 20)
 
 ## 3. Suggest more job titles
 
@@ -52,12 +54,14 @@ From the resume and their titles, suggest 5 to 8 related titles people in India 
 5. Create an empty `jobs.md`:
    `node app/scripts/scan.mjs --jobs jobs.md --add <file with []>` creates the header.
 
+6. If this session was not opened in the workspace folder, tell the user to open Claude in it from now on (see `CLAUDE.md`), because job forms can only get the resume from the session's folder.
+
 **Updating later:** at the start of any session, if PLUGIN's `plugin.json` version is newer than `app/plugin.json`, copy the `app/` files again. Never overwrite `profile.md`, `jobs.md` or `resumes/`.
 
 ## 5. Check the one-time needs
 
 Run `node -v`. If Node is missing or below 18, give the plain install steps from `CLAUDE.md` and wait for "done".
-Check for Claude in Chrome tools. If missing, give the install step and say Naukri and LinkedIn will work after that; company websites still work.
+Check for Claude in Chrome: its tools exist and at least one browser is connected. If not, give the install message from `CLAUDE.md` with the link https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn and wait for "done", then check again. Say Naukri and LinkedIn need it; company websites work without it.
 Ask them to log in to Naukri and LinkedIn in Chrome now, and say "done".
 
 ## 6. Open the dashboard

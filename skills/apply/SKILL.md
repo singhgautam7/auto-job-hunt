@@ -28,7 +28,8 @@ Use Claude in Chrome (the user's own Chrome, where they are logged in). Open the
 
 **Company forms (Greenhouse, Lever, Ashby, Workday, others)**
 - Fill every field from `profile.md`. Upload the resume PDF from the job's Resume column.
-- Dropdowns that do not take typed text: click to open, then click the option.
+- Dropdowns that do not take typed text: click to open, then click the option. Some dropdowns allow several answers: a picked option then vanishes from the list, so check what the field shows instead of picking again.
+- Read every field back before submitting (text, dropdowns, ticked boxes, attached file name). Never trust that a click worked.
 - Screening questions: answer only from `profile.md` and the resume. Yes/No questions about experience must match the resume. If you do not know an answer, do not guess: leave the job unsubmitted, write "Needs you: <question>" in its Notes, and ask all such questions together at the end (or in the next chat, for a scheduled run). Save the answers under "Saved answers" in `profile.md`, then finish those jobs.
 - Consent boxes and NDAs: follow hard rule 4.
 - Personal questions: follow hard rule 5.

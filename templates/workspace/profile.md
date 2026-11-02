@@ -24,6 +24,7 @@ Filled in by Claude during setup. You can edit any line. Claude reads this befor
 - Preferred cities, in order:
 - Open to remote jobs: (Yes / No)
 - Open to moving to another city: (Yes / No)
+- Other rules: (anything else, in your own words)
 
 ## Money and timing
 - Current salary (fixed per year):
@@ -39,7 +40,8 @@ Filled in by Claude during setup. You can edit any line. Claude reads this befor
 - Max applications per day: 20
 - Tick consent boxes: (Yes / No)
 - Daily limit per site on Naukri and LinkedIn: 10
-- Personal questions (gender and similar): prefer not to say
+- Gender: (Male / Female / Other / Prefer not to say)
+- Other personal questions (caste, religion, disability, veteran): prefer not to say
 
 ## Resumes
 | File | Use for |

@@ -12,7 +12,7 @@ A Claude plugin that runs your job search for you. No tech skills needed.
 
 1. The **Claude desktop app** with a paid plan.
 2. **Node.js** (free): go to [nodejs.org](https://nodejs.org), download the LTS version and install it.
-3. **Claude in Chrome** extension, from the Chrome Web Store. Log in to Naukri and LinkedIn in Chrome yourself.
+3. **Claude in Chrome** extension: [install it from the Chrome Web Store](https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn), click **Add to Chrome**, then sign in with your Claude account. Log in to Naukri and LinkedIn in Chrome yourself.
 
 ## Install
 

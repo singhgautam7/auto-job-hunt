@@ -72,7 +72,7 @@ const COLS = [
   ['Posted', 'Posted'], ['Found', 'Found'], ['Pay', 'Pay'], ['Score', 'Match'], ['Verdict', 'Why'],
   ['Status', 'Status'], ['Applied', 'Applied on'], ['Resume', 'Resume'], ['Source', 'Source'], ['Link', 'Link'], ['Notes', 'Notes'],
 ];
-let jobs = [], statuses = [], filterStatus = '', sortKey = 'ID', sortDir = -1, editing = false;
+let jobs = [], statuses = [], filterStatus = '', sortKey = 'Score', sortDir = -1, editing = false;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 

@@ -66,9 +66,11 @@ async function getJson(url) {
   return res.json();
 }
 
+// Every word of a role must appear as a whole word (plural allowed), so "engineer" does not match "engineering".
 export function roleMatches(title, roles) {
   const t = title.toLowerCase();
-  return roles.some(r => r.toLowerCase().split(/\s+/).every(w => t.includes(w)));
+  const esc = w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return roles.some(r => r.toLowerCase().split(/\s+/).every(w => new RegExp(`(^|[^a-z0-9])${esc(w)}s?($|[^a-z0-9])`).test(t)));
 }
 
 export function placeMatches(location, mode, cities, remote) {
@@ -155,6 +157,8 @@ function selfTest() {
   assert(roleMatches('Senior Account Executive, India', ['account executive']), 'role words');
   assert(!roleMatches('Software Engineer', ['sales manager']), 'role miss');
   assert(roleMatches('Regional Sales Manager - West', ['sales manager']), 'role multiword');
+  assert(!roleMatches('Senior Engineering Manager - Billing Platform', ['platform engineer']), 'whole words only');
+  assert(roleMatches('Staff Platform Engineers', ['platform engineer']), 'plural ok');
   assert(placeMatches('Bangalore HQ · Bengaluru · India', '', ['Bengaluru'], false), 'city alias');
   assert(placeMatches('Remote - India', '', ['Mumbai'], true), 'remote india');
   assert(!placeMatches('Remote - US', '', ['Mumbai'], true), 'remote us');

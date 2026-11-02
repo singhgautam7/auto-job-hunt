@@ -37,7 +37,9 @@ Read each result: company, title, location, salary if shown, posted ("3 days ago
 For each, open the job page only if the title and location are not enough. Then edit its row in `jobs.md`:
 - **Score** 1 to 5: how well the job fits their titles, experience, industry and cities. 4+ means worth applying.
 - **Verdict**: one short reason in plain words, for example "Good fit, Mumbai, pay not shown" or "Needs 10+ years, you have 6".
-- **Status** `Skip` if it breaks a limit: wrong city, not remote when they need remote, pay shown and its top is below their minimum, company to avoid, posting closed.
+- **Status** `Skip` if it breaks a limit: wrong city, not remote when they need remote, pay shown and its top is below their minimum, company to avoid, posting closed, a rule under "Other rules", or the user already applied to the same company and role (check rows with Status `Applied`).
+- **Pay not shown:** never skip for that alone. If you know the company usually pays well below their minimum for this level, lower the Score and say so in the Verdict.
+- **Experience:** read the job's required years. If it asks for 3 or more years above theirs, lower the Score.
 - **Pay**: fill in if the posting shows it.
 - **Resume**: the resume file from `profile.md` that best fits the title.
 

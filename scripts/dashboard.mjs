@@ -93,5 +93,7 @@ function selfTest() {
   console.log('self-test ok');
 }
 
-if (args.includes('--self-test')) selfTest();
-else serve();
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  if (args.includes('--self-test')) selfTest();
+  else serve();
+}
