@@ -117,7 +117,7 @@ export function Overview({ data, onOpen }: { data: Data; onOpen: OpenJob }) {
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title="Jobs found and applied per day" sub="Last 14 days" className="lg:col-span-2">
-          <Columns everyOther data={found.map((d, i) => ({ label: d.label, found: d.value, applied: sent[i].value }))}
+          <Columns data={found.map((d, i) => ({ label: d.label, found: d.value, applied: sent[i].value }))}
             series={[{ key: 'found', label: 'Jobs found', color: 'var(--chart-1)' }, { key: 'applied', label: 'Jobs applied', color: 'var(--chart-2)' }]} />
         </Panel>
         <Panel title="Your progress" sub="From found to offer">
@@ -246,7 +246,7 @@ export function Applications({ data, onOpen }: { data: Data; onOpen: OpenJob }) 
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
         <Panel title="Applications per day" sub="Last 14 days" className="lg:col-span-2">
-          <Columns everyOther data={lastDays(data.jobs, 14, j => isApplied(j) ? j.Applied : '').map(d => ({ label: d.label, applications: d.value }))}
+          <Columns data={lastDays(data.jobs, 14, j => isApplied(j) ? j.Applied : '').map(d => ({ label: d.label, applications: d.value }))}
             series={[{ key: 'applications', label: 'Applications', color: 'var(--chart-1)' }]} />
         </Panel>
         <Panel title="Where you applied" sub="Job source"><Bars unit="Applications" data={countBy(applied, j => sourceName(j.Source))} /></Panel>

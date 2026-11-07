@@ -1,8 +1,8 @@
 {
   "name": "auto-job-hunt",
   "owner": { "name": "Gautam Rajeev Singh" },
-  "metadata": { "description": "Job search on autopilot for anyone, no tech skills needed.", "version": "0.8.0" },
+  "metadata": { "description": "Job search on autopilot for anyone, no tech skills needed.", "version": "0.8.1" },
   "plugins": [
-    { "name": "auto-job-hunt", "source": "./", "description": "Finds jobs, applies for you, and tracks everything on a browser dashboard.", "category": "productivity", "version": "0.8.0" }
+    { "name": "auto-job-hunt", "source": "./", "description": "Finds jobs, applies for you, and tracks everything on a browser dashboard.", "category": "productivity", "version": "0.8.1" }
   ]
 }

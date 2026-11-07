@@ -6,18 +6,20 @@ export const Empty = ({ children }: { children: React.ReactNode }) => <p classNa
 type Series = { key: string; label: string; color: string }
 
 // Vertical columns, one or more series side by side. Rows hold label plus one number per series key.
-export function Columns({ data, series, everyOther }: { data: Record<string, string | number>[]; series: Series[]; everyOther?: boolean }) {
+export function Columns({ data, series }: { data: Record<string, string | number>[]; series: Series[] }) {
   const config: ChartConfig = Object.fromEntries(series.map(s => [s.key, { label: s.label, color: s.color }]))
   const single = series.length === 1 ? series[0].key : ''
+  // Full dates do not fit in 14 cells on a phone, so it labels each one by day number; the tooltip has the date.
+  const dayOnly = matchMedia('(max-width: 639px)').matches
   const peak = single ? Math.max(0, ...data.map(d => Number(d[single]))) : 0
   // Only the first highest column carries its number; the axis and tooltip give the rest.
   const rows = data.map((d, i) => ({ ...d, peak: peak && d[single] === peak && data.findIndex(x => x[single] === peak) === i ? peak : undefined }))
-  const ticks = everyOther ? data.filter((_, i) => (data.length - 1 - i) % 2 === 0).map(d => String(d.label)) : undefined
   return (
     <ChartContainer config={config} className="aspect-auto h-56 w-full">
       <BarChart accessibilityLayer data={rows} barGap={2} margin={{ top: single ? 20 : 0, right: 16, bottom: 0, left: 0 }}>
-        <CartesianGrid vertical={false} />
-        <XAxis dataKey="label" ticks={ticks} interval={0} tickLine={false} axisLine={false} tickMargin={8} />
+        {/* Lines between days, not through them, so each day's bars sit in their own cell. */}
+        <CartesianGrid stroke="var(--border)" verticalCoordinatesGenerator={({ offset }) => data.map((_, i) => (offset.left ?? 0) + i * (offset.width ?? 0) / data.length).concat((offset.left ?? 0) + (offset.width ?? 0))} />
+        <XAxis dataKey="label" interval="preserveEnd" minTickGap={4} tickFormatter={l => dayOnly ? String(l).match(/\d+/)?.[0] ?? l : l} tickLine={false} axisLine={false} tickMargin={8} />
         <YAxis allowDecimals={false} tickCount={3} width={28} tickLine={false} axisLine={false} />
         <ChartTooltip content={<ChartTooltipContent />} />
         {series.length > 1 && <ChartLegend verticalAlign="top" align="left" itemSorter={null} content={<ChartLegendContent className="justify-start pt-0 pb-3" />} />}
