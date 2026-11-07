@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto Job Hunt</title>
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjMjU3M0U2Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMDA0OUE4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIHJ4PSIxMjgiIGZpbGw9InVybCgjYmcpIi8+PHBhdGggZD0iTTIwNiAxNTBoMTAwYTI0IDI0IDAgMCAxIDI0IDI0djIyaC0yOHYtMThoLTkydjE4aC0yOHYtMjJhMjQgMjQgMCAwIDEgMjQtMjR6IiBmaWxsPSIjRDhFMkZGIi8+PHJlY3QgeD0iMTA0IiB5PSIxOTAiIHdpZHRoPSIzMDQiIGhlaWdodD0iMjAwIiByeD0iNDAiIGZpbGw9IiNGRkZGRkYiLz48cmVjdCB4PSIxMDQiIHk9IjI2MiIgd2lkdGg9IjMwNCIgaGVpZ2h0PSIyMCIgZmlsbD0iI0Q4RTJGRiIvPjxyZWN0IHg9IjIzNiIgeT0iMjUwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDQiIHJ4PSIxMCIgZmlsbD0iIzI1NzNFNiIvPjxjaXJjbGUgY3g9IjM3OCIgY3k9IjM2NiIgcj0iNzgiIGZpbGw9IiMwMDQ5QTgiLz48Y2lyY2xlIGN4PSIzNzgiIGN5PSIzNjYiIHI9IjY0IiBmaWxsPSIjN0NGMkEwIi8+PHBhdGggZD0iTTM0NyAzNjdsMjEgMjEgNDEtNDMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMzkxQSIgc3Ryb2tlLXdpZHRoPSIxOCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PC9zdmc+" />
+    <script>
+      // Theme before first paint: ?theme=, else the saved choice, else dark.
+      (function () {
+        var mode = null;
+        try { mode = new URLSearchParams(location.search).get('theme') || localStorage.getItem('ajh-mode'); } catch (e) {}
+        document.documentElement.classList.toggle('dark', mode !== 'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

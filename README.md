@@ -65,9 +65,9 @@ Built for people in India (sales, operations, HR, finance, tech and more), and i
 |---|---|
 | ![Jobs tab](docs/screenshots/jobs.png) | ![Automations tab](docs/screenshots/automations.png) |
 
-| Dark mode | On a phone |
+| Light mode | On a phone |
 |---|---|
-| ![Dark mode](docs/screenshots/dark.png) | <img src="docs/screenshots/mobile.png" width="300" alt="Phone view"> |
+| ![Light mode](docs/screenshots/light.png) | <img src="docs/screenshots/mobile.png" width="300" alt="Phone view"> |
 
 ---
 
@@ -149,7 +149,7 @@ It opens by itself when a chat starts. Click **http://localhost:4747** in any Cl
 | **Automations** | What Claude does on its own and every setting, plus everything that needs your review |
 | **My profile** | The answers Claude uses for every form |
 
-Click any job for its details, the reason for its score, and your notes. The dashboard is for viewing; to change anything, ask Claude. It works on a phone screen and in dark mode.
+Click any job for its details, the reason for its score, and your notes. The dashboard is for viewing; to change anything, ask Claude. It works on a phone screen, opens in dark mode, and has a light mode button at the top right.
 
 ---
 
@@ -238,7 +238,7 @@ Your data stays in **Documents/Auto Job Hunt** until you delete that folder your
 
 ## For developers
 
-No dependencies: everything runs on Node.js 18+ and the Chrome already on the computer.
+Nothing to install to use it: everything runs on Node.js 18+ and the Chrome already on the computer. The dashboard page is prebuilt; npm is only needed to change it.
 
 | Path | Purpose |
 |---|---|
@@ -250,12 +250,17 @@ No dependencies: everything runs on Node.js 18+ and the Chrome already on the co
 | `scripts/make-pdf.mjs` | HTML to PDF with headless Chrome |
 | `scripts/start-dashboard.mjs` | Start-up hook: updates the user's `app/`, daily backup, starts the dashboard |
 | `scripts/doctor.mjs` | Health check |
-| `templates/` | Dashboard page, resume and cover letter templates, files for a new user's folder |
+| `dashboard-app/` | Dashboard source: React, Tailwind and shadcn/ui. Builds into one file, `templates/dashboard.html` |
+| `templates/` | Built dashboard page, resume and cover letter templates, files for a new user's folder |
 | `companies.json` | Built-in company list |
 | `hooks/hooks.json` | Runs `start-dashboard.mjs` when a chat starts |
 
 ```bash
 bash test.sh                  # every self-test
+```
+
+```bash
+cd dashboard-app && npm install && npm run build   # after changing the dashboard; commit templates/dashboard.html too
 ```
 
 ```bash

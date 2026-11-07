@@ -129,6 +129,8 @@ function route(req, res) {
 
 function selfTest() {
   const assert = (c, m) => { if (!c) throw new Error(`self-test failed: ${m}`); };
+  const page = readText(PAGE);
+  assert(page.includes('id="root"') && page.includes('<style>') && !page.includes('/src/main.tsx'), 'dashboard.html is not built: run npm run build in dashboard-app');
   const md = `# Jobs\n\n| ${HEADER.join(' | ')} |\n|---|\n| 1 | 2026-11-02 10:00 |  | Acme | Sales Manager |${' |'.repeat(HEADER.length - 5)}\n`;
   const jobs = parseJobs(md);
   assert(jobs.length === 1 && jobs[0].Company === 'Acme', 'parse');
